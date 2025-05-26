@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFF5E9"
+    android:fillViewport="true"
+    android:padding="32dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+        <ImageView
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:src="@drawable/logo_cocinapp"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:text="Completá tu Perfil"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#E68523"
+            android:layout_marginBottom="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <!-- Tabs Usuario / Alumno -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="#FFE0B2"
+            android:padding="4dp"
+            android:layout_marginBottom="24dp">
+
+            <Button
+                android:id="@+id/tabUsuario"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Usuario"
+                android:backgroundTint="#E68523"
+                android:textColor="#FFFFFF" />
+
+            <Button
+                android:id="@+id/tabAlumno"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Alumno"
+                android:backgroundTint="#FFF5E9"
+                android:textColor="#E68523" />
+        </LinearLayout>
+
+        <!-- Formulario base -->
+        <EditText android:id="@+id/inputNombre"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Nombre"
+            android:background="@android:drawable/edit_text"
+            android:padding="12dp"
+            android:layout_marginBottom="12dp" />
+
+        <EditText android:id="@+id/inputApellido"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Apellido"
+            android:background="@android:drawable/edit_text"
+            android:padding="12dp"
+            android:layout_marginBottom="12dp" />
+
+        <EditText android:id="@+id/inputFecha"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Fecha de Nacimiento"
+            android:background="@android:drawable/edit_text"
+            android:padding="12dp"
+            android:layout_marginBottom="12dp" />
+
+        <EditText android:id="@+id/inputGenero"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Género"
+            android:background="@android:drawable/edit_text"
+            android:padding="12dp"
+            android:layout_marginBottom="12dp" />
+
+        <EditText android:id="@+id/inputPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Contraseña"
+            android:inputType="textPassword"
+            android:background="@android:drawable/edit_text"
+            android:padding="12dp"
+            android:layout_marginBottom="12dp" />
+
+        <EditText android:id="@+id/inputConfirmarPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Confirmar Contraseña"
+            android:inputType="textPassword"
+            android:background="@android:drawable/edit_text"
+            android:padding="12dp"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Contenido para Alumno -->
+        <LinearLayout
+            android:id="@+id/contenedorAlumno"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <Button android:id="@+id/btnDniFrente"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Subir Foto DNI (Frente)"
+                android:backgroundTint="#E68523"
+                android:textColor="#FFFFFF"
+                android:layout_marginBottom="8dp" />
+
+            <Button android:id="@+id/btnDniDorso"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Subir Foto DNI (Dorso)"
+                android:backgroundTint="#E68523"
+                android:textColor="#FFFFFF"
+                android:layout_marginBottom="8dp" />
+
+            <EditText android:id="@+id/inputTramiteDni"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Nro Trámite DNI"
+                android:background="@android:drawable/edit_text"
+                android:padding="12dp"
+                android:layout_marginBottom="12dp" />
+
+            <Button android:id="@+id/btnAgregarPago"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Agregar Medio de Pago"
+                android:backgroundTint="#E68523"
+                android:textColor="#FFFFFF"
+                android:layout_marginBottom="16dp" />
+        </LinearLayout>
+
+        <CheckBox
+            android:id="@+id/termsCheckbox"
+            android:text="Acepto los Términos y Condiciones"
+            android:textColor="#E68523"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/finalizarBtn"
+            android:text="Finalizar Registro"
+            android:backgroundTint="#E68523"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+</ScrollView>

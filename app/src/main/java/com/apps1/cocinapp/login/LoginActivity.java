@@ -1,12 +1,18 @@
-package com.apps1.cocinapp;
+package com.apps1.cocinapp.login;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.apps1.cocinapp.R;
+import com.apps1.cocinapp.main.MainActivity;
+import com.apps1.cocinapp.recover.PasswordRecoveryActivity;
+import com.apps1.cocinapp.register.RegisterStartActivity;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -29,8 +35,13 @@ public class LoginActivity extends AppCompatActivity {
             if (email.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "Completa todos los campos", Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(this, "Login exitoso (simulado)", Toast.LENGTH_SHORT).show();
-                // Aquí iría la lógica real de autenticación
+                if (email.equals("usuario") && password.equals("1234")) {
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    Toast.makeText(this, "Usuario o contraseña incorrectos", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -39,6 +50,13 @@ public class LoginActivity extends AppCompatActivity {
             Intent intent = new Intent(LoginActivity.this, RegisterStartActivity.class);
             startActivity(intent);
         });
+
+        TextView forgotPassword = findViewById(R.id.forgotPassword);
+        forgotPassword.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, PasswordRecoveryActivity.class);
+            startActivity(intent);
+        });
+
 
     }
 }

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="com.obiscr.chatgpt.settings.EasyCodeState">
+    <option name="projectFiles" value="$PROJECT_DIR$/app/src/androidTest/java/com/apps1/cocinapp/ExampleInstrumentedTest.java;C:/Users/maria/StudioProjects/Cocinapp/app/src/main/java/com/apps1/cocinapp/data/Receta.java;C:/Users/maria/StudioProjects/Cocinapp/app/src/main/java/com/apps1/cocinapp/login/LoginActivity.java;C:/Users/maria/StudioProjects/Cocinapp/app/src/main/java/com/apps1/cocinapp/main/MainActivity.java;C:/Users/maria/StudioProjects/Cocinapp/app/src/main/java/com/apps1/cocinapp/receta/RecetaAdapter.java;C:/Users/maria/StudioProjects/Cocinapp/app/src/main/java/com/apps1/cocinapp/register/RegisterCompleteActivity.java;C:/Users/maria/StudioProjects/Cocinapp/app/src/main/java/com/apps1/cocinapp/register/RegisterStartActivity.java;C:/Users/maria/StudioProjects/Cocinapp/app/src/main/java/com/apps1/cocinapp/splash/SplashActivity.java;C:/Users/maria/StudioProjects/Cocinapp/app/src/test/java/com/apps1/cocinapp/ExampleUnitTest.java" />
+  </component>
+</project>
