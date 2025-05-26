@@ -35,6 +35,8 @@
         <activity android:name=".recover.PasswordRecoveryActivity" />
         <activity android:name=".recover.PasswordResetActivity" />
         <activity android:name=".recover.PasswordCodeVerificationActivity" />
+        <activity android:name=".main.AboutActivity" />
+        <activity android:name=".recetas.DetalleRecetaActivity" />
 
 
     </application>

@@ -39,12 +39,14 @@ public class RegisterStartActivity extends AppCompatActivity {
                 return;
             }
 
-            // Simular generación y envío de código
+            // Simular validación: el usuario NO existe (podés conectar a base real después)
+
+            // Generar código
             String codigoGenerado = UUID.randomUUID().toString().substring(0, 6).toUpperCase();
             Toast.makeText(this, "Código enviado a tu email: " + codigoGenerado, Toast.LENGTH_LONG).show();
 
-            // Redirigir a la pantalla de completar perfil
-            Intent intent = new Intent(this, RegisterCompleteActivity.class);
+            // Ir a pantalla de verificación de código
+            Intent intent = new Intent(this, RegisterCodeActivity.class);
             intent.putExtra("email", email);
             intent.putExtra("alias", alias);
             intent.putExtra("codigo", codigoGenerado);

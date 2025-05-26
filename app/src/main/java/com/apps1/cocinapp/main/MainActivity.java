@@ -62,12 +62,20 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.recetasRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        List<Receta> lista = new ArrayList<>();
-        lista.add(new Receta("Pizza", "Roberto S.", R.drawable.sample_pizza, 4.5f));
-        lista.add(new Receta("Albóndigas Chili con huevo", "María G.", R.drawable.sample_albondigas, 4.0f));
+        List<Receta> listaDeRecetas = new ArrayList<>();
+        listaDeRecetas.add(new Receta("Pizza", "Roberto S.", R.drawable.sample_pizza, 4.5f));
+        listaDeRecetas.add(new Receta("Albóndigas Chili con huevo", "María G.", R.drawable.sample_albondigas, 4.0f));
 
-        RecetaAdapter adapter = new RecetaAdapter(lista);
+        RecetaAdapter adapter = new RecetaAdapter(this, listaDeRecetas);
         recyclerView.setAdapter(adapter);
+
+        TextView navAbout = findViewById(R.id.navAbout);
+        navAbout.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, AboutActivity.class);
+            startActivity(intent);
+        });
+
     }
+
 
 }
