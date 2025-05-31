@@ -42,7 +42,7 @@ public class RegisterStartActivity extends AppCompatActivity {
             // Simular validación: el usuario NO existe (podés conectar a base real después)
 
             // Generar código
-            String codigoGenerado = UUID.randomUUID().toString().substring(0, 6).toUpperCase();
+            String codigoGenerado = "1234";//UUID.randomUUID().toString().substring(0, 6).toUpperCase();
             Toast.makeText(this, "Código enviado a tu email: " + codigoGenerado, Toast.LENGTH_LONG).show();
 
             // Ir a pantalla de verificación de código

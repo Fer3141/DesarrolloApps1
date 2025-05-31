@@ -39,7 +39,6 @@ public class RegisterCodeActivity extends AppCompatActivity {
                 intent.putExtra("email", email);
                 intent.putExtra("alias", alias);
                 intent.putExtra("codigo", codigoEsperado);
-                intent.putExtra("alumno", esAlumno);
                 startActivity(intent);
             } else {
                 Toast.makeText(this, "Código incorrecto", Toast.LENGTH_SHORT).show();

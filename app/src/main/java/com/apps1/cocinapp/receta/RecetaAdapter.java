@@ -68,4 +68,10 @@ public class RecetaAdapter extends RecyclerView.Adapter<RecetaAdapter.RecetaView
             rating = itemView.findViewById(R.id.ratingReceta);
         }
     }
+
+    public void actualizarLista(List<Receta> nuevasRecetas) {
+        this.recetas = nuevasRecetas;
+        notifyDataSetChanged();
+    }
+
 }

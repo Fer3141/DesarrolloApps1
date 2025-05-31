@@ -2,18 +2,13 @@ package com.apps1.cocinapp.main;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
 import androidx.core.view.GravityCompat;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -32,6 +27,11 @@ public class MainActivity extends AppCompatActivity {
     TextView navLogin, navAbout;
     TextView tabRecent, tabRecipes, tabCourses;
     EditText searchBox;
+    RecetaAdapter adapter;
+
+    List<Receta> recetasRecientes = new ArrayList<>();
+    List<Receta> recetasPopulares = new ArrayList<>();
+    List<Receta> cursos = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,28 +54,41 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        navAbout.setOnClickListener(v -> Toast.makeText(this, "Cocinapp versión visitante", Toast.LENGTH_SHORT).show());
-        tabRecent.setOnClickListener(v -> Toast.makeText(this, "Mostrando más recientes", Toast.LENGTH_SHORT).show());
-        tabRecipes.setOnClickListener(v -> Toast.makeText(this, "Mostrando recetas", Toast.LENGTH_SHORT).show());
-        tabCourses.setOnClickListener(v -> Toast.makeText(this, "Mostrando cursos", Toast.LENGTH_SHORT).show());
-
-        RecyclerView recyclerView = findViewById(R.id.recetasRecyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        List<Receta> listaDeRecetas = new ArrayList<>();
-        listaDeRecetas.add(new Receta("Pizza", "Roberto S.", R.drawable.sample_pizza, 4.5f));
-        listaDeRecetas.add(new Receta("Albóndigas Chili con huevo", "María G.", R.drawable.sample_albondigas, 4.0f));
-
-        RecetaAdapter adapter = new RecetaAdapter(this, listaDeRecetas);
-        recyclerView.setAdapter(adapter);
-
-        TextView navAbout = findViewById(R.id.navAbout);
         navAbout.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, AboutActivity.class);
             startActivity(intent);
         });
 
+        // Datos de ejemplo
+        recetasRecientes.add(new Receta("Pizza", "Roberto S.", R.drawable.sample_pizza, 4.5f));
+        recetasRecientes.add(new Receta("Empanadas", "Clara R.", R.drawable.sample_empanadas, 3.5f));
+
+        recetasPopulares.add(new Receta("Tarta de choclo", "Luis M.", R.drawable.sample_tarta, 5.0f));
+        recetasPopulares.add(new Receta("Fideos al pesto", "Laura J.", R.drawable.sample_fideos, 4.8f));
+
+        cursos.add(new Receta("Curso Pan Casero", "Chef Emma", R.drawable.sample_curso_pan, 4.7f));
+        cursos.add(new Receta("Curso Pastas", "Chef Mateo", R.drawable.sample_curso_pastas, 4.9f));
+
+        // RecyclerView
+        RecyclerView recyclerView = findViewById(R.id.recetasRecyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new RecetaAdapter(this, recetasRecientes); // por defecto: recientes
+        recyclerView.setAdapter(adapter);
+
+        // Tabs
+        tabRecent.setOnClickListener(v -> {
+            adapter.actualizarLista(recetasRecientes);
+            Toast.makeText(this, "Mostrando más recientes", Toast.LENGTH_SHORT).show();
+        });
+
+        tabRecipes.setOnClickListener(v -> {
+            adapter.actualizarLista(recetasPopulares);
+            Toast.makeText(this, "Mostrando recetas populares", Toast.LENGTH_SHORT).show();
+        });
+
+        tabCourses.setOnClickListener(v -> {
+            adapter.actualizarLista(cursos);
+            Toast.makeText(this, "Mostrando cursos", Toast.LENGTH_SHORT).show();
+        });
     }
-
-
 }

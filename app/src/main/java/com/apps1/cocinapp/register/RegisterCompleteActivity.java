@@ -1,5 +1,6 @@
 package com.apps1.cocinapp.register;
 
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.apps1.cocinapp.R;
+import com.apps1.cocinapp.login.LoginActivity;
 
 public class RegisterCompleteActivity extends AppCompatActivity {
 
@@ -95,7 +97,10 @@ public class RegisterCompleteActivity extends AppCompatActivity {
             }
 
             Toast.makeText(this, "Registro completado con éxito", Toast.LENGTH_LONG).show();
-            finish(); // o redireccionar a login
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+
         });
     }
 

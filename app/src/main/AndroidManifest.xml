@@ -37,6 +37,8 @@
         <activity android:name=".recover.PasswordCodeVerificationActivity" />
         <activity android:name=".main.AboutActivity" />
         <activity android:name=".recetas.DetalleRecetaActivity" />
+        <activity android:name=".register.RegisterCodeActivity" />
+        <activity android:name=".register.RegisterCompleteActivity" />
 
 
     </application>
