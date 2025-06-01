@@ -113,6 +113,21 @@
                     android:textSize="14sp"
                     android:textColor="#666666"
                     android:layout_marginBottom="8dp" />
+
+                <!-- Mensaje de error por falta de conexión -->
+                <TextView
+                    android:id="@+id/mensajeSinConexion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="No hay conexión a Internet"
+                    android:textColor="#E68523"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:visibility="gone"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"/>
+
             </LinearLayout>
         </ScrollView>
 
