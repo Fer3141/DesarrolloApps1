@@ -11,7 +11,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.apps1.cocinapp.R;
 
-import java.util.UUID;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RegisterStartActivity extends AppCompatActivity {
 
@@ -39,19 +43,41 @@ public class RegisterStartActivity extends AppCompatActivity {
                 return;
             }
 
-            // Simular validación: el usuario NO existe (podés conectar a base real después)
+            enviarDatosAlBackend(email, alias, esAlumno);
+        });
+    }
 
-            // Generar código
-            String codigoGenerado = "1234";//UUID.randomUUID().toString().substring(0, 6).toUpperCase();
-            Toast.makeText(this, "Código enviado a tu email: " + codigoGenerado, Toast.LENGTH_LONG).show();
+    private void enviarDatosAlBackend(String email, String alias, boolean esAlumno) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://10.0.2.2:8080/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
 
-            // Ir a pantalla de verificación de código
-            Intent intent = new Intent(this, RegisterCodeActivity.class);
-            intent.putExtra("email", email);
-            intent.putExtra("alias", alias);
-            intent.putExtra("codigo", codigoGenerado);
-            intent.putExtra("alumno", esAlumno);
-            startActivity(intent);
+        ApiService apiService = retrofit.create(ApiService.class);
+        RegistroRequest requestBody = new RegistroRequest(email, alias);
+
+        Call<Void> call = apiService.verificarUsuario(requestBody);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(RegisterStartActivity.this, "Código enviado al mail", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(RegisterStartActivity.this, RegisterCodeActivity.class);
+                    intent.putExtra("email", email);
+                    intent.putExtra("alias", alias);
+                    intent.putExtra("alumno", esAlumno);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(RegisterStartActivity.this, "Código HTTP: " + response.code(), Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Toast.makeText(RegisterStartActivity.this, "❌ Sin conexión: " + t.getMessage(), Toast.LENGTH_LONG).show();
+            }
         });
     }
 }
+
+
