@@ -9,38 +9,72 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.apps1.cocinapp.R;
+import com.apps1.cocinapp.register.ApiService;
+import com.apps1.cocinapp.register.CodigoVerificacionRequest;
+import com.apps1.cocinapp.register.RetrofitClient;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class PasswordCodeVerificationActivity extends AppCompatActivity {
 
-    String expectedCode = "123456"; // Simulación
+    EditText codeInput;
+    Button verifyButton;
+    String email; // lo traemos desde el intent
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_password_code_verification);
 
-        EditText codeInput = findViewById(R.id.codeInput);
-        Button verifyButton = findViewById(R.id.verifyCodeButton);
-        Button resendButton = findViewById(R.id.resendCodeButton);
+        codeInput = findViewById(R.id.codeInput);
+        verifyButton = findViewById(R.id.verifyCodeButton);
 
-        String email = getIntent().getStringExtra("email");
+        email = getIntent().getStringExtra("email");
 
         verifyButton.setOnClickListener(v -> {
-            String inputCode = codeInput.getText().toString().trim();
+            String codigo = codeInput.getText().toString().trim();
 
-            if (inputCode.equals(expectedCode)) {
-                Intent intent = new Intent(this, PasswordResetActivity.class);
-                intent.putExtra("email", email);
-                startActivity(intent);
-                finish();
-            } else {
-                Toast.makeText(this, "Código incorrecto", Toast.LENGTH_SHORT).show();
+            // validamos que esté completo
+            if (codigo.isEmpty()) {
+                Toast.makeText(this, "completá el código", Toast.LENGTH_SHORT).show();
+                return;
             }
-        });
 
-        resendButton.setOnClickListener(v -> {
-            Toast.makeText(this, "Código reenviado a " + email, Toast.LENGTH_SHORT).show();
-            // Aquí podés implementar un reenvío real más adelante
+            if (codigo.length() != 6) {
+                Toast.makeText(this, "el código debe tener 6 dígitos", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // armamos la llamada con retrofit
+            ApiService apiService = RetrofitClient.getInstance().getApi();
+            CodigoVerificacionRequest request = new CodigoVerificacionRequest(email, codigo);
+
+            Call<ResponseBody> call = apiService.verificarCodigoRecuperacion(request);
+
+            call.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    if (response.isSuccessful()) {
+                        Toast.makeText(PasswordCodeVerificationActivity.this, "código validado", Toast.LENGTH_SHORT).show();
+
+                        // pasamos al siguiente paso (reset de contraseña)
+                        Intent intent = new Intent(PasswordCodeVerificationActivity.this, PasswordResetActivity.class);
+                        intent.putExtra("email", email);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        Toast.makeText(PasswordCodeVerificationActivity.this, "código incorrecto o vencido", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    Toast.makeText(PasswordCodeVerificationActivity.this, "falló conexión: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
         });
     }
 }
