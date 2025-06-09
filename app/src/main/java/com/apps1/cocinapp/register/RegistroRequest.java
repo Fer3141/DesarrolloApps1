@@ -1,11 +1,19 @@
 package com.apps1.cocinapp.register;
 
 public class RegistroRequest {
-    private String mail;
-    private String nickname;
+    private String email;
+    private String alias;
 
-    public RegistroRequest(String mail, String nickname) {
-        this.mail = mail;
-        this.nickname = nickname;
+    public RegistroRequest(String email, String alias) {
+        this.email = email;
+        this.alias = alias;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getAlias() {
+        return alias;
     }
 }

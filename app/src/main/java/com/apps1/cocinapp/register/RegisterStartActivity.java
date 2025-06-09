@@ -11,11 +11,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.apps1.cocinapp.R;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RegisterStartActivity extends AppCompatActivity {
 
@@ -30,54 +29,44 @@ public class RegisterStartActivity extends AppCompatActivity {
 
         emailInput = findViewById(R.id.emailInput);
         aliasInput = findViewById(R.id.aliasInput);
-        alumnoCheckbox = findViewById(R.id.alumnoCheckbox);
         startRegistrationBtn = findViewById(R.id.startRegistrationBtn);
 
         startRegistrationBtn.setOnClickListener(v -> {
             String email = emailInput.getText().toString().trim();
             String alias = aliasInput.getText().toString().trim();
-            boolean esAlumno = alumnoCheckbox.isChecked();
 
             if (email.isEmpty() || alias.isEmpty()) {
                 Toast.makeText(this, "Completá email y alias", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            enviarDatosAlBackend(email, alias, esAlumno);
+            enviarDatosAlBackend(email, alias);
         });
     }
 
-    private void enviarDatosAlBackend(String email, String alias, boolean esAlumno) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.0.2.2:8080/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        ApiService apiService = retrofit.create(ApiService.class);
+    private void enviarDatosAlBackend(String email, String alias) {
+        ApiService apiService = RetrofitClient.getInstance().getApi();
         RegistroRequest requestBody = new RegistroRequest(email, alias);
 
-        Call<Void> call = apiService.verificarUsuario(requestBody);
-        call.enqueue(new Callback<Void>() {
+        Call<ResponseBody> call = apiService.registroInicial(requestBody);
+        call.enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
                     Toast.makeText(RegisterStartActivity.this, "Código enviado al mail", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(RegisterStartActivity.this, RegisterCodeActivity.class);
                     intent.putExtra("email", email);
                     intent.putExtra("alias", alias);
-                    intent.putExtra("alumno", esAlumno);
                     startActivity(intent);
                 } else {
-                    Toast.makeText(RegisterStartActivity.this, "Código HTTP: " + response.code(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(RegisterStartActivity.this, "Error: " + response.code(), Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<Void> call, Throwable t) {
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
                 Toast.makeText(RegisterStartActivity.this, "❌ Sin conexión: " + t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
 }
-
-

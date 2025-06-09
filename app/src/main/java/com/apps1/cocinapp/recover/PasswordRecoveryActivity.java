@@ -20,66 +20,53 @@ import retrofit2.Response;
 
 public class PasswordRecoveryActivity extends AppCompatActivity {
 
-    EditText recoveryEmail;
-    Button sendCodeButton, goBackToLogin;
+    EditText emailInput;
+    Button sendCodeBtn, goBackToLoginBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_password_recovery);
 
-        // vinculamos los elementos del xml
-        recoveryEmail = findViewById(R.id.recoveryEmail);
-        sendCodeButton = findViewById(R.id.sendCodeButton);
-        goBackToLogin = findViewById(R.id.goBackToLogin);
+        emailInput = findViewById(R.id.emailInput);
+        sendCodeBtn = findViewById(R.id.sendCodeBtn);
+        goBackToLoginBtn = findViewById(R.id.goBackToLogin);
 
-        // botón para enviar el código al mail
-        sendCodeButton.setOnClickListener(v -> {
-            String email = recoveryEmail.getText().toString().trim();
+        // Volver al login
+        goBackToLoginBtn.setOnClickListener(v -> {
+            finish(); // simplemente vuelve atrás
+        });
 
-            // validamos que no esté vacío
-            if (email.isEmpty()) {
-                Toast.makeText(this, "completá el email", Toast.LENGTH_SHORT).show();
+        sendCodeBtn.setOnClickListener(v -> {
+            String mail = emailInput.getText().toString().trim();
+
+            if (mail.isEmpty()) {
+                Toast.makeText(this, "Ingresá tu email", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // validamos el formato de email
-            if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                Toast.makeText(this, "email inválido", Toast.LENGTH_SHORT).show();
-                return;
-            }
+            EmailRequest request = new EmailRequest(mail);
+            ApiService api = RetrofitClient.getInstance().getApi();
 
-            // armamos la llamada con retrofit usando EmailRequest
-            ApiService apiService = RetrofitClient.getInstance().getApi();
-            EmailRequest request = new EmailRequest(email);
-            Call<ResponseBody> call = apiService.enviarCodigoRecuperacion(request);
-
-            call.enqueue(new Callback<ResponseBody>() {
+            api.enviarCodigoRecuperacion(request).enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                     if (response.isSuccessful()) {
-                        Toast.makeText(PasswordRecoveryActivity.this, "código enviado al mail", Toast.LENGTH_SHORT).show();
-
-                        // pasamos al paso siguiente con el email
+                        Toast.makeText(PasswordRecoveryActivity.this, "Código enviado al mail", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(PasswordRecoveryActivity.this, PasswordCodeVerificationActivity.class);
-                        intent.putExtra("email", email);
+                        intent.putExtra("mail", mail);
                         startActivity(intent);
                         finish();
-                    } else if (response.code() == 404) {
-                        Toast.makeText(PasswordRecoveryActivity.this, "el correo no está registrado", Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(PasswordRecoveryActivity.this, "error al enviar el código", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(PasswordRecoveryActivity.this, "Error: " + response.code(), Toast.LENGTH_LONG).show();
                     }
                 }
 
                 @Override
                 public void onFailure(Call<ResponseBody> call, Throwable t) {
-                    Toast.makeText(PasswordRecoveryActivity.this, "falló la conexión: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PasswordRecoveryActivity.this, "❌ " + t.getMessage(), Toast.LENGTH_LONG).show();
                 }
             });
         });
-
-        // botón para volver al login
-        goBackToLogin.setOnClickListener(v -> finish());
     }
 }

@@ -9,30 +9,32 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 
 public interface ApiService {
-    @POST("api/auth/verificar")
-    Call<Void> verificarUsuario(@Body RegistroRequest request);
 
-    // para registrarse
-    @POST("/api/verificar-codigo")
-    Call<ResponseBody> verificarCodigo(@Body CodigoVerificacionRequest body);
+    // paso 1 – registro inicial
+    @POST("/api/registro-inicial")
+    Call<ResponseBody> registroInicial(@Body RegistroRequest request);
 
-    // para recuperación de contraseña
-    @POST("/api/verificar-codigo-recuperacion")
-    Call<ResponseBody> verificarCodigoRecuperacion(@Body CodigoVerificacionRequest body);
+    // paso 2 – confirmación del código
+    @POST("/api/confirmar-codigo")
+    Call<ResponseBody> confirmarCodigo(@Body CodigoVerificacionRequest request);
 
-    @POST("/api/enviar-codigo-recuperacion")
-    Call<ResponseBody> enviarCodigoRecuperacion(@Body EmailRequest body);
-
-    @POST("/api/reset-password")
-    Call<Void> resetPassword(@Body PasswordResetRequest request);
-
-    @POST("/login")
-    Call<usuarios> login(@Body LoginRequest request);
-
-    @GET("d082edca-c848-4c4f-8738-863ed8501458")
-    Call<usuarios> login();
-
-    @POST("/api/registro-usuario")
+    // paso 3 – registro final (usuario o alumno)
+    @POST("/api/register")
     Call<ResponseBody> registrarUsuario(@Body RegistroUsuarioRequest request);
 
+    // login
+    @POST("/api/login")
+    Call<usuarios> login(@Body LoginRequest request);
+
+    // recuperación paso 1 – enviar código
+    @POST("/api/auth/recover-password")
+    Call<ResponseBody> enviarCodigoRecuperacion(@Body EmailRequest request);
+
+    // recuperación paso 2 – resetear contraseña
+    @POST("/api/auth/reset-password")
+    Call<ResponseBody> resetPassword(@Body PasswordResetRequest request);
+    @POST("/api/auth/verificar-codigo-recuperacion")
+    Call<ResponseBody> verificarCodigoRecuperacion(@Body CodigoVerificacionRequest request);
+
 }
+

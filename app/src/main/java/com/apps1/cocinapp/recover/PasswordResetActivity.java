@@ -14,6 +14,7 @@ import com.apps1.cocinapp.register.ApiService;
 import com.apps1.cocinapp.register.PasswordResetRequest;
 import com.apps1.cocinapp.register.RetrofitClient;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -21,65 +22,53 @@ import retrofit2.Response;
 public class PasswordResetActivity extends AppCompatActivity {
 
     EditText newPasswordInput, confirmPasswordInput;
-    Button resetPasswordButton;
-    String email;
+    Button acceptButton;
+
+    String mail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_password_reset);
 
-        // vinculamos los campos del xml
         newPasswordInput = findViewById(R.id.newPassword);
         confirmPasswordInput = findViewById(R.id.confirmPassword);
-        resetPasswordButton = findViewById(R.id.resetPasswordButton); // asegurate del ID
+        acceptButton = findViewById(R.id.resetPasswordButton);
 
-        // recibimos el email desde la pantalla anterior
-        email = getIntent().getStringExtra("email");
+        // recibimos mail desde intent (código ya fue verificado antes)
+        mail = getIntent().getStringExtra("mail");
 
-        resetPasswordButton.setOnClickListener(v -> {
-            String password = newPasswordInput.getText().toString().trim();
-            String confirmPassword = confirmPasswordInput.getText().toString().trim();
+        acceptButton.setOnClickListener(v -> {
+            String nuevaPass = newPasswordInput.getText().toString().trim();
+            String confirmarPass = confirmPasswordInput.getText().toString().trim();
 
-            // validaciones
-            if (password.isEmpty() || confirmPassword.isEmpty()) {
-                Toast.makeText(this, "completá ambos campos", Toast.LENGTH_SHORT).show();
+            if (nuevaPass.isEmpty() || confirmarPass.isEmpty()) {
+                Toast.makeText(this, "Completá ambos campos", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            if (password.length() < 6) {
-                Toast.makeText(this, "la contraseña debe tener al menos 6 caracteres", Toast.LENGTH_SHORT).show();
+            if (!nuevaPass.equals(confirmarPass)) {
+                Toast.makeText(this, "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            if (!password.equals(confirmPassword)) {
-                Toast.makeText(this, "las contraseñas no coinciden", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            // llamamos al backend para guardar la nueva contraseña
-            ApiService apiService = RetrofitClient.getInstance().getApi();
-            PasswordResetRequest request = new PasswordResetRequest(email, password);
-
-            apiService.resetPassword(request).enqueue(new Callback<Void>() {
+            // se manda solo mail y pass (sin código)
+            PasswordResetRequest body = new PasswordResetRequest(mail, nuevaPass, ""); // "" o null para código
+            RetrofitClient.getInstance().getApi().resetPassword(body).enqueue(new Callback<ResponseBody>() {
                 @Override
-                public void onResponse(Call<Void> call, Response<Void> response) {
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                     if (response.isSuccessful()) {
-                        Toast.makeText(PasswordResetActivity.this, "contraseña actualizada correctamente", Toast.LENGTH_SHORT).show();
-
-                        // volvemos al login
-                        Intent intent = new Intent(PasswordResetActivity.this, LoginActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intent);
+                        Toast.makeText(PasswordResetActivity.this, "Contraseña cambiada", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(PasswordResetActivity.this, LoginActivity.class));
                         finish();
                     } else {
-                        Toast.makeText(PasswordResetActivity.this, "no se pudo actualizar la contraseña", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(PasswordResetActivity.this, "Error: no se pudo cambiar la contraseña", Toast.LENGTH_LONG).show();
                     }
                 }
 
                 @Override
-                public void onFailure(Call<Void> call, Throwable t) {
-                    Toast.makeText(PasswordResetActivity.this, "falló conexión: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    Toast.makeText(PasswordResetActivity.this, "❌ " + t.getMessage(), Toast.LENGTH_LONG).show();
                 }
             });
         });

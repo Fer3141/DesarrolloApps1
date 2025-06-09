@@ -56,28 +56,29 @@ public class LoginActivity extends AppCompatActivity {
 
             // se hace la llamada POST al backend
             call.enqueue(new Callback<usuarios>() {
-                @Override
-                public void onResponse(Call<usuarios> call, Response<usuarios> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        usuarios usuario = response.body();
 
-                        // podés guardar datos del usuario si querés con SharedPreferences
+            @Override
+            public void onResponse(Call<usuarios> call, Response<usuarios> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    usuarios usuario = response.body();
 
-                        Toast.makeText(LoginActivity.this, "bienvenido " + usuario.getNombre(), Toast.LENGTH_SHORT).show();
+                    // ejemplo: mostrar nombre
+                    Toast.makeText(LoginActivity.this, "Bienvenido " + usuario.getNombre(), Toast.LENGTH_SHORT).show();
 
-                        // redirige al home
-                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                        startActivity(intent);
-                        finish();
-                    } else {
-                        Toast.makeText(LoginActivity.this, "credenciales incorrectas", Toast.LENGTH_SHORT).show();
-                    }
+                    // podés guardar usuario con SharedPreferences acá
+
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    Toast.makeText(LoginActivity.this, "credenciales incorrectas", Toast.LENGTH_SHORT).show();
                 }
+            }
 
-                @Override
-                public void onFailure(Call<usuarios> call, Throwable t) {
-                    Toast.makeText(LoginActivity.this, "error de red: " + t.getMessage(), Toast.LENGTH_LONG).show();
-                }
+            @Override
+            public void onFailure(Call<usuarios> call, Throwable t) {
+                Toast.makeText(LoginActivity.this, "error de red: " + t.getMessage(), Toast.LENGTH_LONG).show();
+            }
             });
         });
 

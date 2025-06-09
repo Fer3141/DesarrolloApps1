@@ -21,7 +21,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="32dp" />
 
-    <!-- Contenedor del formulario (LinearLayout para separación) -->
     <LinearLayout
         android:id="@+id/formLayout"
         android:orientation="vertical"
@@ -51,12 +50,6 @@
             android:padding="12dp"
             android:layout_marginBottom="16dp" />
 
-        <CheckBox
-            android:id="@+id/alumnoCheckbox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Registrarme como alumno"
-            android:layout_marginBottom="24dp" />
 
         <Button
             android:id="@+id/startRegistrationBtn"

@@ -1,17 +1,14 @@
 package com.apps1.cocinapp.register;
 
 public class LoginRequest {
-    private String email;
+    private String mail;
     private String password;
 
-    public LoginRequest(String email, String password) {
-        this.email = email;
+    public LoginRequest(String mail, String password) {
+        this.mail = mail;
         this.password = password;
     }
 
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
-
+    public String getMail() { return mail; }
     public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
 }

@@ -1,9 +1,6 @@
-
 package com.apps1.cocinapp.register;
 
 import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -21,43 +18,39 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import android.app.DatePickerDialog;
+
+import java.util.Calendar;
+import java.util.Locale;
 
 public class RegisterCompleteActivity extends AppCompatActivity {
 
-    EditText inputNombre, inputApellido, inputFecha, inputGenero, inputPassword, inputConfirmarPassword;
-    EditText inputTramiteDni;
-    LinearLayout contenedorAlumno;
-    Button btnDniFrente, btnDniDorso, btnAgregarPago, finalizarBtn;
+    EditText nombreInput, apellidoInput, passwordInput, confirmarPasswordInput, tramiteInput;
+    Button finalizarBtn, btnDniFrente, btnDniDorso;
     Button tabUsuario, tabAlumno;
+    LinearLayout contenedorAlumno;
     CheckBox termsCheckbox;
-
     boolean esAlumno = false;
     String email, alias;
-
+    EditText fechaInput;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_complete);
 
-        inputNombre = findViewById(R.id.inputNombre);
-        inputApellido = findViewById(R.id.inputApellido);
-        inputFecha = findViewById(R.id.inputFecha);
-        inputGenero = findViewById(R.id.inputGenero);
-        inputPassword = findViewById(R.id.inputPassword);
-        inputConfirmarPassword = findViewById(R.id.inputConfirmarPassword);
-
-        inputTramiteDni = findViewById(R.id.inputTramiteDni);
-        contenedorAlumno = findViewById(R.id.contenedorAlumno);
-        btnDniFrente = findViewById(R.id.btnDniFrente);
-        btnDniDorso = findViewById(R.id.btnDniDorso);
-        btnAgregarPago = findViewById(R.id.btnAgregarPago);
-
-        termsCheckbox = findViewById(R.id.termsCheckbox);
-        finalizarBtn = findViewById(R.id.finalizarBtn);
         tabUsuario = findViewById(R.id.tabUsuario);
         tabAlumno = findViewById(R.id.tabAlumno);
-
-        contenedorAlumno.setVisibility(View.GONE);
+        contenedorAlumno = findViewById(R.id.contenedorAlumno);
+        fechaInput = findViewById(R.id.inputFecha);
+        nombreInput = findViewById(R.id.inputNombre);
+        apellidoInput = findViewById(R.id.inputApellido);
+        passwordInput = findViewById(R.id.inputPassword);
+        confirmarPasswordInput = findViewById(R.id.inputConfirmarPassword);
+        tramiteInput = findViewById(R.id.inputTramiteDni);
+        btnDniFrente = findViewById(R.id.btnDniFrente);
+        btnDniDorso = findViewById(R.id.btnDniDorso);
+        termsCheckbox = findViewById(R.id.termsCheckbox);
+        finalizarBtn = findViewById(R.id.finalizarBtn);
 
         email = getIntent().getStringExtra("email");
         alias = getIntent().getStringExtra("alias");
@@ -65,91 +58,107 @@ public class RegisterCompleteActivity extends AppCompatActivity {
         tabUsuario.setOnClickListener(v -> {
             esAlumno = false;
             contenedorAlumno.setVisibility(View.GONE);
-            tabUsuario.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#E68523")));
-            tabUsuario.setTextColor(Color.WHITE);
-            tabAlumno.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FFF5E9")));
-            tabAlumno.setTextColor(Color.parseColor("#E68523"));
+
+            tabUsuario.setBackgroundTintList(getColorStateList(R.color.naranja));
+            tabUsuario.setTextColor(getColor(R.color.white));
+
+            tabAlumno.setBackgroundTintList(getColorStateList(R.color.beige_claro));
+            tabAlumno.setTextColor(getColor(R.color.naranja));
         });
 
         tabAlumno.setOnClickListener(v -> {
             esAlumno = true;
             contenedorAlumno.setVisibility(View.VISIBLE);
-            tabAlumno.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#E68523")));
-            tabAlumno.setTextColor(Color.WHITE);
-            tabUsuario.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FFF5E9")));
-            tabUsuario.setTextColor(Color.parseColor("#E68523"));
+
+            tabAlumno.setBackgroundTintList(getColorStateList(R.color.naranja));
+            tabAlumno.setTextColor(getColor(R.color.white));
+
+            tabUsuario.setBackgroundTintList(getColorStateList(R.color.beige_claro));
+            tabUsuario.setTextColor(getColor(R.color.naranja));
         });
 
-        finalizarBtn.setOnClickListener(v -> validarYRegistrar());
-    }
+        fechaInput.setOnClickListener(v -> {
+            final Calendar calendario = Calendar.getInstance();
+            int anio = calendario.get(Calendar.YEAR);
+            int mes = calendario.get(Calendar.MONTH);
+            int dia = calendario.get(Calendar.DAY_OF_MONTH);
 
-    private void validarYRegistrar() {
-        String nombre = inputNombre.getText().toString().trim();
-        String apellido = inputApellido.getText().toString().trim();
-        String fecha = inputFecha.getText().toString().trim();
-        String genero = inputGenero.getText().toString().trim();
-        String password = inputPassword.getText().toString().trim();
-        String confirmar = inputConfirmarPassword.getText().toString().trim();
+            DatePickerDialog datePicker = new DatePickerDialog(
+                    RegisterCompleteActivity.this,
+                    (view, year, month, dayOfMonth) -> {
+                        String fechaFormateada = String.format(Locale.getDefault(), "%02d/%02d/%04d", dayOfMonth, month + 1, year);
+                        fechaInput.setText(fechaFormateada);
+                    },
+                    anio, mes, dia
+            );
+            datePicker.show();
+        });
 
-        if (nombre.isEmpty() || apellido.isEmpty() || fecha.isEmpty() || genero.isEmpty() ||
-                password.isEmpty() || confirmar.isEmpty()) {
-            Toast.makeText(this, "completá todos los campos", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        finalizarBtn.setOnClickListener(v -> {
+            String nombre = nombreInput.getText().toString().trim();
+            String apellido = apellidoInput.getText().toString().trim();
+            String password = passwordInput.getText().toString().trim();
+            String confirmar = confirmarPasswordInput.getText().toString().trim();
+            String tramite = tramiteInput.getText().toString().trim();
 
-        if (!password.equals(confirmar)) {
-            Toast.makeText(this, "las contraseñas no coinciden", Toast.LENGTH_SHORT).show();
-            return;
-        }
+            String fotoFrente = "base64_frente_simulado";
+            String fotoDorso = "base64_dorso_simulado";
 
-        if (!termsCheckbox.isChecked()) {
-            Toast.makeText(this, "tenés que aceptar los términos", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        RegistroUsuarioRequest request = new RegistroUsuarioRequest();
-        request.setMail(email);
-        request.setAlias(alias);
-        request.setPassword(password);
-        request.setNombre(nombre);
-        request.setApellido(apellido);
-        request.setFechaNacimiento(fecha);
-        request.setGenero(genero);
-        request.setTipo(esAlumno ? "alumno" : "usuario");
-        request.setHabilitado(true);
-
-        if (esAlumno) {
-            String tramiteDni = inputTramiteDni.getText().toString().trim();
-            if (tramiteDni.isEmpty()) {
-                Toast.makeText(this, "completá el número de trámite del DNI", Toast.LENGTH_SHORT).show();
+            if (nombre.isEmpty() || apellido.isEmpty() || password.isEmpty() || confirmar.isEmpty()) {
+                Toast.makeText(this, "Completá todos los campos", Toast.LENGTH_SHORT).show();
                 return;
             }
-            request.setTramiteDni(tramiteDni);
-            // request.setFotoDniFrente(...) // pendiente
-            // request.setFotoDniDorso(...)  // pendiente
-            // request.setMedioPago(...)     // pendiente
-        }
 
+            if (!password.equals(confirmar)) {
+                Toast.makeText(this, "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (!termsCheckbox.isChecked()) {
+                Toast.makeText(this, "Debés aceptar los términos", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (esAlumno && tramite.isEmpty()) {
+                Toast.makeText(this, "Falta el trámite del DNI", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            RegistroUsuarioRequest body = new RegistroUsuarioRequest(
+                    email,
+                    esAlumno,
+                    nombre,
+                    apellido,
+                    password,
+                    esAlumno ? fotoFrente : "",
+                    esAlumno ? fotoDorso : "",
+                    esAlumno ? tramite : "",
+                    esAlumno ? "0.00" : ""
+            );
+
+            enviarRegistroFinal(body);
+        });
+    }
+
+    private void enviarRegistroFinal(RegistroUsuarioRequest body) {
         ApiService apiService = RetrofitClient.getInstance().getApi();
-        Call<ResponseBody> call = apiService.registrarUsuario(request);
 
+        Call<ResponseBody> call = apiService.registrarUsuario(body);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(RegisterCompleteActivity.this, "registro exitoso", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(RegisterCompleteActivity.this, LoginActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
+                    Toast.makeText(RegisterCompleteActivity.this, "Registro finalizado", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(RegisterCompleteActivity.this, LoginActivity.class));
                     finish();
                 } else {
-                    Toast.makeText(RegisterCompleteActivity.this, "no se pudo registrar", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegisterCompleteActivity.this, "Error: " + response.code(), Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Toast.makeText(RegisterCompleteActivity.this, "falló conexión: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(RegisterCompleteActivity.this, "❌ Sin conexión: " + t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }

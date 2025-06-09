@@ -27,9 +27,10 @@
 
     <Button
         android:id="@+id/continuarBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:text="Continuar"
         android:backgroundTint="#E68523"
-        android:textColor="#FFFFFF"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:textColor="#FFFFFF" />
+
 </LinearLayout>

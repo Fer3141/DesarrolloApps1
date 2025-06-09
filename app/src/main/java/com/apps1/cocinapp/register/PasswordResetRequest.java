@@ -2,19 +2,16 @@ package com.apps1.cocinapp.register;
 
 public class PasswordResetRequest {
     private String mail;
-    private String nuevaPassword;
+    private String pass;
+    private String codigo;
 
-    public PasswordResetRequest(String mail, String nuevaPassword) {
+    public PasswordResetRequest(String mail, String pass, String codigo) {
         this.mail = mail;
-        this.nuevaPassword = nuevaPassword;
+        this.pass = pass;
+        this.codigo = codigo;
     }
 
-    public String getMail() {
-        return mail;
-    }
-
-    public String getNuevaPassword() {
-        return nuevaPassword;
-    }
+    public String getMail() { return mail; }
+    public String getPass() { return pass; }
+    public String getCodigo() { return codigo; }
 }
-
