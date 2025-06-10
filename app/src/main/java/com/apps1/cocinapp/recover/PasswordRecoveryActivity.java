@@ -58,7 +58,12 @@ public class PasswordRecoveryActivity extends AppCompatActivity {
                         startActivity(intent);
                         finish();
                     } else {
-                        Toast.makeText(PasswordRecoveryActivity.this, "Error: " + response.code(), Toast.LENGTH_LONG).show();
+                        try{
+                            String errorMsg = response.errorBody().string();
+                            Toast.makeText(PasswordRecoveryActivity.this, errorMsg, Toast.LENGTH_LONG).show();
+                        }catch (Exception e) {
+                            Toast.makeText(PasswordRecoveryActivity.this, "Error: " + response.code(), Toast.LENGTH_LONG).show();
+                        }
                     }
                 }
 

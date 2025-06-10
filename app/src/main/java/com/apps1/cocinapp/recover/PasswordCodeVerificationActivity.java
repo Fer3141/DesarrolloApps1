@@ -60,7 +60,12 @@ public class PasswordCodeVerificationActivity extends AppCompatActivity {
                         startActivity(intent);
                         finish();
                     } else {
-                        Toast.makeText(PasswordCodeVerificationActivity.this, "Código incorrecto o expirado", Toast.LENGTH_LONG).show();
+                        try{
+                            String errorMsg = response.errorBody().string();
+                            Toast.makeText(PasswordCodeVerificationActivity.this, errorMsg, Toast.LENGTH_LONG).show();
+                        } catch (Exception e) {
+                            Toast.makeText(PasswordCodeVerificationActivity.this, "Error inesperado: ", Toast.LENGTH_LONG).show();
+                        }
                     }
                 }
 

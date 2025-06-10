@@ -65,7 +65,12 @@ public class LoginActivity extends AppCompatActivity {
                             Toast.makeText(LoginActivity.this, "Error al procesar el token", Toast.LENGTH_SHORT).show();
                         }
                     } else {
-                        Toast.makeText(LoginActivity.this, "Credenciales incorrectas", Toast.LENGTH_SHORT).show();
+                        try{
+                            String errorMsg = response.errorBody().string();
+                            Toast.makeText(LoginActivity.this, errorMsg, Toast.LENGTH_LONG).show();
+                        }catch (Exception e) {
+                            Toast.makeText(LoginActivity.this, "Error inesperado", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }
 

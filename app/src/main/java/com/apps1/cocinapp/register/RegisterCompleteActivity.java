@@ -152,7 +152,12 @@ public class RegisterCompleteActivity extends AppCompatActivity {
                     startActivity(new Intent(RegisterCompleteActivity.this, LoginActivity.class));
                     finish();
                 } else {
-                    Toast.makeText(RegisterCompleteActivity.this, "Error: " + response.code(), Toast.LENGTH_LONG).show();
+                    try {
+                        String errorMsg = response.errorBody().string();
+                        Toast.makeText(RegisterCompleteActivity.this, errorMsg, Toast.LENGTH_LONG).show();
+                    } catch (Exception e) {
+                        Toast.makeText(RegisterCompleteActivity.this, "Error inesperado", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
 

@@ -62,7 +62,13 @@ public class PasswordResetActivity extends AppCompatActivity {
                         startActivity(new Intent(PasswordResetActivity.this, LoginActivity.class));
                         finish();
                     } else {
-                        Toast.makeText(PasswordResetActivity.this, "Error: no se pudo cambiar la contraseña", Toast.LENGTH_LONG).show();
+                        try{
+                            String errorMsg = response.errorBody().string();
+                            Toast.makeText(PasswordResetActivity.this, errorMsg, Toast.LENGTH_LONG).show();
+                        } catch (Exception e) {
+                            Toast.makeText(PasswordResetActivity.this, "Error inesperado: ", Toast.LENGTH_LONG).show();
+
+                        }
                     }
                 }
 
