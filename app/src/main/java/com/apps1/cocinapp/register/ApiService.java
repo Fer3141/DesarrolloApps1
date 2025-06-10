@@ -7,7 +7,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
-
+import okhttp3.ResponseBody;
 public interface ApiService {
 
     // paso 1 – registro inicial
@@ -24,7 +24,7 @@ public interface ApiService {
 
     // login
     @POST("/api/login")
-    Call<usuarios> login(@Body LoginRequest request);
+    Call<ResponseBody> login(@Body LoginRequest request);
 
     // recuperación paso 1 – enviar código
     @POST("/api/auth/recover-password")

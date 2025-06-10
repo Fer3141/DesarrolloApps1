@@ -21,14 +21,16 @@ import com.apps1.cocinapp.R;
 import com.apps1.cocinapp.data.Receta;
 import com.apps1.cocinapp.login.LoginActivity;
 import com.apps1.cocinapp.receta.RecetaAdapter;
+import com.apps1.cocinapp.session.SharedPreferencesHelper;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import com.apps1.cocinapp.utils.JwtUtils;
+import org.json.JSONObject;
 public class MainActivity extends AppCompatActivity {
 
     DrawerLayout drawerLayout;
-    TextView navLogin, navAbout, tabRecent, tabRecipes, tabCourses, mensajeSinConexion;
+    TextView navLogin, navLogout, navAbout, tabRecent, tabRecipes, tabCourses, mensajeSinConexion, visitorMessage;
     EditText searchBox;
     RecetaAdapter adapter;
     RecyclerView recyclerView;
@@ -42,21 +44,32 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Inicialización de vistas
         drawerLayout = findViewById(R.id.drawer_layout);
         navLogin = findViewById(R.id.navLogin);
+        navLogout = findViewById(R.id.navLogout);
         navAbout = findViewById(R.id.navAbout);
         tabRecent = findViewById(R.id.tabRecent);
         tabRecipes = findViewById(R.id.tabRecipes);
         tabCourses = findViewById(R.id.tabCourses);
         searchBox = findViewById(R.id.searchBox);
         mensajeSinConexion = findViewById(R.id.mensajeSinConexion);
+        visitorMessage = findViewById(R.id.visitorMessage);
         recyclerView = findViewById(R.id.recetasRecyclerView);
 
         ImageButton menuButton = findViewById(R.id.menuButton);
         menuButton.setOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
 
-        // Internet check
+        // Mostrar u ocultar elementos según sesión
+        if (SharedPreferencesHelper.hayToken(this)) {
+            navLogin.setVisibility(View.GONE);
+            navLogout.setVisibility(View.VISIBLE);
+            visitorMessage.setVisibility(View.GONE);
+        } else {
+            navLogin.setVisibility(View.VISIBLE);
+            navLogout.setVisibility(View.GONE);
+            visitorMessage.setVisibility(View.VISIBLE);
+        }
+
         if (!hayInternet()) {
             mensajeSinConexion.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.GONE);
@@ -73,16 +86,18 @@ public class MainActivity extends AppCompatActivity {
         cursos.add(new Receta("Curso Pan Casero", "Chef Emma", R.drawable.sample_curso_pan, 4.7f));
         cursos.add(new Receta("Curso Pastas", "Chef Mateo", R.drawable.sample_curso_pastas, 4.9f));
 
-        // Configuración del RecyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new RecetaAdapter(this, recetasRecientes); // por defecto: recientes
+        adapter = new RecetaAdapter(this, recetasRecientes);
         recyclerView.setAdapter(adapter);
 
-        // Navegación
-        navLogin.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, LoginActivity.class)));
-        navAbout.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, AboutActivity.class)));
+        navLogin.setOnClickListener(v -> startActivity(new Intent(this, LoginActivity.class)));
+        navAbout.setOnClickListener(v -> startActivity(new Intent(this, AboutActivity.class)));
+        navLogout.setOnClickListener(v -> {
+            SharedPreferencesHelper.eliminarToken(this);
+            startActivity(new Intent(this, MainActivity.class));
+            finish();
+        });
 
-        // Tabs
         tabRecent.setOnClickListener(v -> {
             adapter.actualizarLista(recetasRecientes);
             Toast.makeText(this, "Mostrando más recientes", Toast.LENGTH_SHORT).show();
@@ -97,6 +112,19 @@ public class MainActivity extends AppCompatActivity {
             adapter.actualizarLista(cursos);
             Toast.makeText(this, "Mostrando cursos", Toast.LENGTH_SHORT).show();
         });
+
+        TextView userWelcome = findViewById(R.id.userWelcome);
+        String token = SharedPreferencesHelper.obtenerToken(this);
+
+        if (token != null && !token.isEmpty()) {
+            JSONObject payload = JwtUtils.decodificarPayload(token);
+            if (payload != null) {
+                String nombre = payload.optString("nombre", "");
+                userWelcome.setText("Hola, " + nombre);
+                userWelcome.setVisibility(View.VISIBLE);
+            }
+        }
+
     }
 
     public boolean hayInternet() {

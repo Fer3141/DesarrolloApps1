@@ -1,5 +1,7 @@
 package com.apps1.cocinapp.data;
 
+
+// ESTA CLASE YA NO SE VA A USAR PORQUE PASAMOS TODOS LOS DATOS DESDE EL TOKEN
 public class usuarios {
     private int idUsuario;
     private String email;

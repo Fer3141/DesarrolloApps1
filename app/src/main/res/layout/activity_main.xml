@@ -151,6 +151,7 @@
         android:paddingTop="32dp"
         android:layout_gravity="start">
 
+
         <TextView
             android:id="@+id/navLogin"
             android:text="🔐 Ingresar"
@@ -158,6 +159,25 @@
             android:padding="12dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/userWelcome"
+            android:text="Hola, usuario"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:layout_marginBottom="16dp"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/navLogout"
+            android:text="🚪 Cerrar sesión"
+            android:textSize="16sp"
+            android:padding="12dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/navAbout"
