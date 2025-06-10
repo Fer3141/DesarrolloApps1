@@ -59,7 +59,12 @@ public class RegisterStartActivity extends AppCompatActivity {
                     intent.putExtra("alias", alias);
                     startActivity(intent);
                 } else {
-                    Toast.makeText(RegisterStartActivity.this, "Error: " + response.code(), Toast.LENGTH_LONG).show();
+                    try {
+                        String errorMsg = response.errorBody().string(); // tomo el mensaje del backend
+                        Toast.makeText(RegisterStartActivity.this, errorMsg, Toast.LENGTH_LONG).show();
+                    } catch (Exception e) {
+                        Toast.makeText(RegisterStartActivity.this, "Error inesperado", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
 
