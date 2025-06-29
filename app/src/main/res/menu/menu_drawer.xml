@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_login"
+        android:title="🔐 Ingresar"
+        android:icon="@android:drawable/ic_lock_lock" />
+
+    <item
+        android:id="@+id/nav_about"
+        android:title="ℹ️ Sobre la app"
+        android:icon="@android:drawable/ic_menu_info_details" />
+
+</menu>

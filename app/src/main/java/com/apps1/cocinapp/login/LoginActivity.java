@@ -18,6 +18,8 @@ import com.apps1.cocinapp.register.RegisterStartActivity;
 import com.apps1.cocinapp.register.RetrofitClient;
 import com.apps1.cocinapp.session.SharedPreferencesHelper;
 
+import org.json.JSONObject;
+
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -55,9 +57,13 @@ public class LoginActivity extends AppCompatActivity {
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                     if (response.isSuccessful() && response.body() != null) {
                         String token;
+                        String rol;
                         try {
                             token = response.body().string();
+                            JSONObject payload = JwtUtils.decodePayload(token);
+                            rol = payload.getString("rol");
                             SharedPreferencesHelper.guardarToken(LoginActivity.this, token);
+                            SharedPreferencesHelper.guardarRol(LoginActivity.this, rol);
                             Toast.makeText(LoginActivity.this, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(LoginActivity.this, MainActivity.class));
                             finish();

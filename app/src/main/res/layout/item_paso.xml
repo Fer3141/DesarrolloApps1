@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_marginTop="8dp">
+
+    <EditText
+        android:id="@+id/tituloPasoInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Título Paso"
+        android:padding="8dp"
+        android:background="@android:drawable/edit_text" />
+
+    <EditText
+        android:id="@+id/descripcionPasoInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Descripción del paso..."
+        android:minLines="2"
+        android:padding="8dp"
+        android:layout_marginTop="4dp"
+        android:background="@android:drawable/edit_text" />
+</LinearLayout>

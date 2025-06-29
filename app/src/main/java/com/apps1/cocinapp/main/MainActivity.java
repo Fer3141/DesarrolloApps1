@@ -2,12 +2,15 @@ package com.apps1.cocinapp.main;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,11 +24,14 @@ import com.apps1.cocinapp.R;
 import com.apps1.cocinapp.data.Receta;
 import com.apps1.cocinapp.login.LoginActivity;
 import com.apps1.cocinapp.receta.RecetaAdapter;
+import com.apps1.cocinapp.recetas.CrearRecetaActivity;
 import com.apps1.cocinapp.session.SharedPreferencesHelper;
 
 import java.util.ArrayList;
 import java.util.List;
 import com.apps1.cocinapp.utils.JwtUtils;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 import org.json.JSONObject;
 public class MainActivity extends AppCompatActivity {
 
@@ -38,6 +44,13 @@ public class MainActivity extends AppCompatActivity {
     List<Receta> recetasRecientes = new ArrayList<>();
     List<Receta> recetasPopulares = new ArrayList<>();
     List<Receta> cursos = new ArrayList<>();
+
+    BottomNavigationView bottomNav;
+
+    private boolean estaLogueado;
+    LinearLayout menuOpciones;
+
+    Button btnCrearReceta;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +68,13 @@ public class MainActivity extends AppCompatActivity {
         mensajeSinConexion = findViewById(R.id.mensajeSinConexion);
         visitorMessage = findViewById(R.id.visitorMessage);
         recyclerView = findViewById(R.id.recetasRecyclerView);
+        bottomNav = findViewById(R.id.bottomNavigation);
+        menuOpciones = findViewById(R.id.menuOpciones);
+        btnCrearReceta = findViewById(R.id.btnCrearReceta);
+
+        estaLogueado = false;
+        SharedPreferences prefs = getSharedPreferences("miapp", MODE_PRIVATE);
+
 
         ImageButton menuButton = findViewById(R.id.menuButton);
         menuButton.setOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
@@ -117,6 +137,7 @@ public class MainActivity extends AppCompatActivity {
         String token = SharedPreferencesHelper.obtenerToken(this);
 
         if (token != null && !token.isEmpty()) {
+            estaLogueado = true;
             JSONObject payload = JwtUtils.decodificarPayload(token);
             if (payload != null) {
                 String nombre = payload.optString("nombre", "");
@@ -124,6 +145,55 @@ public class MainActivity extends AppCompatActivity {
                 userWelcome.setVisibility(View.VISIBLE);
             }
         }
+
+        if (!estaLogueado) {
+            bottomNav.getMenu().removeItem(R.id.nav_menu);
+        }
+
+        bottomNav.setOnItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+
+            if (itemId == R.id.nav_home) {
+                // Siempre va al inicio
+                Intent intent = new Intent(MainActivity.this, MainActivity.class);
+                startActivity(intent);
+                return true;
+
+            } else if (itemId == R.id.nav_menu) {
+                // Si está logueado, va a opciones
+                if (estaLogueado) {
+                    Toast.makeText(this, "Ir a opciones", Toast.LENGTH_SHORT).show();
+                    if (menuOpciones.getVisibility() == View.GONE) {
+                        menuOpciones.setVisibility(View.VISIBLE);
+                    } else {
+                        menuOpciones.setVisibility(View.GONE);
+                    }
+                }
+                return true;
+
+            } else if (itemId == R.id.nav_perfil) {
+                if (!estaLogueado) {
+                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(this, "Ir a perfil", Toast.LENGTH_SHORT).show();
+                    String rol = SharedPreferencesHelper.obtenerRol(this);
+                    if (rol.equals("alumno")) {
+                        Toast.makeText(this, "alumno", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(this, "usuario", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                return true;
+            }
+
+            return false;
+        });
+
+        btnCrearReceta.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, CrearRecetaActivity.class);
+            startActivity(intent);
+        });
 
     }
 

@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFF5E9"
+    tools:context=".recetas.CrearRecetaActivity">
+
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+
+    <!-- TÍTULO -->
+    <TextView
+        android:id="@+id/tituloCrear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Crear Receta"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="#E68523"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="24dp" />
+
+    <!-- Imagen -->
+    <ImageView
+        android:id="@+id/imagenReceta"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:src="@drawable/ic_add_a_photo"
+        app:layout_constraintTop_toBottomOf="@id/tituloCrear"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp" />
+
+    <!-- Nombre -->
+    <EditText
+        android:id="@+id/nombreInput"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Nombre..."
+        android:padding="12dp"
+        app:layout_constraintTop_toBottomOf="@id/imagenReceta"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="12dp"
+        android:layout_marginHorizontal="32dp" />
+
+    <!-- Descripción -->
+    <EditText
+        android:id="@+id/descripcionInput"
+        android:layout_width="0dp"
+        android:layout_height="100dp"
+        android:hint="Descripción..."
+        android:padding="12dp"
+        android:gravity="top"
+        android:inputType="textMultiLine"
+        app:layout_constraintTop_toBottomOf="@id/nombreInput"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="12dp"
+        android:layout_marginHorizontal="32dp" />
+
+    <!-- Tipo -->
+    <Spinner
+        android:id="@+id/tipoSpinner"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        app:layout_constraintTop_toBottomOf="@id/descripcionInput"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginHorizontal="32dp" />
+
+    <!-- Personas -->
+    <EditText
+        android:id="@+id/personasInput"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Cantidad de Personas..."
+        android:inputType="number"
+        android:padding="12dp"
+        app:layout_constraintTop_toBottomOf="@id/tipoSpinner"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="12dp"
+        android:layout_marginHorizontal="32dp" />
+
+    <!-- Ingrediente principal -->
+    <!-- Contenedor donde se agregará el formulario dinámico -->
+    <LinearLayout
+        android:id="@+id/contenedorIngredientes"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintTop_toBottomOf="@id/personasInput"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginHorizontal="32dp" />
+
+
+    <!-- Botón Agregar Ingrediente -->
+    <Button
+        android:id="@+id/btnAgregarIngrediente"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="+ Agregar Ingrediente"
+        android:backgroundTint="#E68523"
+        android:textColor="#FFFFFF"
+        app:layout_constraintTop_toBottomOf="@id/contenedorIngredientes"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Botón Agregar Paso -->
+
+
+
+    <LinearLayout
+        android:id="@+id/contenedorPasos"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="12dp"
+        android:layout_marginHorizontal="32dp"
+        app:layout_constraintTop_toBottomOf="@id/btnAgregarPaso"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/btnAgregarPaso"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="+ Agregar Paso"
+        android:backgroundTint="#E68523"
+        android:textColor="#FFFFFF"
+        app:layout_constraintTop_toBottomOf="@id/btnAgregarIngrediente"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="12dp"
+        android:layout_marginHorizontal="32dp" />
+
+    <!-- Botón Publicar -->
+    <Button
+        android:id="@+id/btnPublicar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Publicar"
+        android:backgroundTint="#E68523"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="80dp"
+        android:layout_marginHorizontal="32dp"
+        app:layout_constraintTop_toBottomOf="@id/contenedorPasos"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+    <!-- Menú inferior -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigation"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:menu="@menu/menu_bottom"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/menuOpciones"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="#FFFFFF"
+        android:visibility="gone"
+        android:padding="16dp"
+        android:elevation="8dp"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" >
+
+        <Button
+            android:id="@+id/btnCrearReceta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="+ Crear Receta"
+            android:backgroundTint="#FFE0B2"
+            android:textColor="#E68523"
+            android:textStyle="bold"
+            android:drawablePadding="8dp" />
+
+        <Button
+            android:id="@+id/btnRecetasGuardadas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="📑 Recetas Guardadas"
+            android:backgroundTint="#FFF5E9"
+            android:textColor="#E68523"
+            android:layout_marginTop="8dp" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
