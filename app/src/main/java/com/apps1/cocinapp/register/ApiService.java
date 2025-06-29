@@ -1,6 +1,7 @@
 package com.apps1.cocinapp.register;
 
 import com.apps1.cocinapp.data.usuarios;
+import com.apps1.cocinapp.usuario.AlumnoRequest;
 import com.apps1.cocinapp.usuario.DatosAlumnoDTO;
 import com.apps1.cocinapp.usuario.PerfilDTO;
 
@@ -50,8 +51,7 @@ public interface ApiService {
     Call<Void> actualizarBiografia(@Header("Authorization") String token, @Query("biografia") String biografia);
 
     @PUT("/api/hacer-alumno")
-    Call<Void> hacerseAlumno(@Header("Authorization") String authHeader,
-                             @Body DatosAlumnoDTO datos);
+    Call<Void> hacerseAlumno(@Header("Authorization") String authHeader, @Body AlumnoRequest datos);
 
 
 }

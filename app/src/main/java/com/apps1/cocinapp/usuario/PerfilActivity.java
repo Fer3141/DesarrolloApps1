@@ -30,10 +30,12 @@ import retrofit2.Retrofit;
 public class PerfilActivity extends AppCompatActivity {
 
     private TextView nombrePerfil;
-    private EditText biografiaInput;
-    private Button btnGuardarBiografia, btnCerrarSesion, btnQuieroSerAlumno;
+    private EditText biografiaInput, editTramiteDNI, editNroTarjeta;
+    private Button btnGuardarBiografia, btnCerrarSesion, btnQuieroSerAlumno, btnGuardarAlumno;
     private LinearLayout seccionAlumno, formAlumnoLayout;
 
+
+    Long idUsuario;
     Retrofit retrofit;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,9 +50,11 @@ public class PerfilActivity extends AppCompatActivity {
         btnQuieroSerAlumno = findViewById(R.id.btnQuieroSerAlumno);
         formAlumnoLayout = findViewById(R.id.formAlumnoLayout);
         formAlumnoLayout.setVisibility(View.GONE);
+        editTramiteDNI = findViewById(R.id.editTramiteDNI);
+        editNroTarjeta = findViewById(R.id.editNroTarjeta);
+        btnGuardarAlumno = findViewById(R.id.btnGuardarAlumno);
 
-
-        Long idUsuario = SharedPreferencesHelper.obtenerIdUsuario(this);  // Usá el ID, no el token
+        idUsuario = SharedPreferencesHelper.obtenerIdUsuario(this);  // Usá el ID, no el token
         String rol = SharedPreferencesHelper.obtenerRol(this);
 
         // Referencias comunes
@@ -86,38 +90,39 @@ public class PerfilActivity extends AppCompatActivity {
         btnQuieroSerAlumno.setOnClickListener(v -> {
             btnQuieroSerAlumno.setVisibility(View.GONE);
             formAlumnoLayout.setVisibility(View.VISIBLE);
+        });
 
+        btnGuardarAlumno.setOnClickListener(v -> {
+            String tramiteDNI = editTramiteDNI.getText().toString().trim();
+            String nroTarjeta = editNroTarjeta.getText().toString().trim();
+
+            if (tramiteDNI.isEmpty() || nroTarjeta.isEmpty()) {
+                Toast.makeText(PerfilActivity.this, "Completar todos los campos", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            AlumnoRequest alumnoRequest = new AlumnoRequest(idUsuario, tramiteDNI, nroTarjeta);
+            ApiService api = RetrofitClient.getInstance().getApi();
             String token = SharedPreferencesHelper.obtenerToken(this);
-                ApiService api = RetrofitClient.getInstance().getApi();
 
-                // Acá podés reemplazar con valores reales del formulario si tenés campos para esto
-                DatosAlumnoDTO datos = new DatosAlumnoDTO(
-                        "url_frente.jpg",
-                        "url_dorso.jpg",
-                        "12345678",
-                        "4567-8901-2345-6789",
-                        "1000"
-                );
-
-                Call<Void> call = api.hacerseAlumno("Bearer " + token, datos);
-                call.enqueue(new Callback<Void>() {
-                    @Override
-                    public void onResponse(Call<Void> call, Response<Void> response) {
-                        if (response.isSuccessful()) {
-                            Toast.makeText(PerfilActivity.this, "Ya sos alumno 🎉", Toast.LENGTH_SHORT).show();
-                            recreate(); // recargar pantalla o podés navegar
-                        } else {
-                            Toast.makeText(PerfilActivity.this, "Error al actualizar", Toast.LENGTH_SHORT).show();
-                        }
+            Call<Void> call = api.hacerseAlumno("Bearer " + token, alumnoRequest);
+            call.enqueue(new Callback<Void>() {
+                @Override
+                public void onResponse(Call<Void> call, Response<Void> response) {
+                    if (response.isSuccessful()) {
+                        Toast.makeText(PerfilActivity.this, "Solicitud enviada correctamente", Toast.LENGTH_SHORT).show();
+                        formAlumnoLayout.setVisibility(View.GONE);
+                    } else {
+                        Toast.makeText(PerfilActivity.this, "Error al enviar solicitud", Toast.LENGTH_SHORT).show();
                     }
+                }
 
-                    @Override
-                    public void onFailure(Call<Void> call, Throwable t) {
-                        Toast.makeText(PerfilActivity.this, "Fallo conexión", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                @Override
+                public void onFailure(Call<Void> call, Throwable t) {
+                    Toast.makeText(PerfilActivity.this, "Error de conexión", Toast.LENGTH_SHORT).show();
+                }
             });
-
+        });
 
 
     }
