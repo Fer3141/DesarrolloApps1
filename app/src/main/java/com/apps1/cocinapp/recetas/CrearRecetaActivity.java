@@ -75,6 +75,13 @@ public class CrearRecetaActivity extends AppCompatActivity {
         publicarBtn.setOnClickListener(v -> {
 
             String titulo = tituloInput.getText().toString().trim();
+            if (titulo.isEmpty()) {
+                Toast.makeText(CrearRecetaActivity.this, "El título es obligatorio", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            else{
+                Toast.makeText(CrearRecetaActivity.this, titulo, Toast.LENGTH_SHORT).show();
+            }
             String descripcion = descripcionInput.getText().toString().trim();
 
             List<IngredienteDTO> ingredientes = new ArrayList<>();

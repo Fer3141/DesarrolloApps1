@@ -1,8 +1,8 @@
 package com.apps1.cocinapp.recetas;
 
 public class PasoDTO {
-    private String titulo;
-    private String descripcion;
+    public String titulo;
+    public String descripcion;
 
     public PasoDTO() {
     }

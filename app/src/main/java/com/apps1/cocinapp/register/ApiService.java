@@ -54,7 +54,7 @@ public interface ApiService {
     @PUT("/api/hacer-alumno")
     Call<Void> hacerseAlumno(@Header("Authorization") String authHeader, @Body AlumnoRequest datos);
 
-    @POST("recetas")
+    @POST("recetas/crear")
     Call<Void> crearReceta(@Header("Authorization") String token, @Body RecetaDTO recetaDTO);
 
 
