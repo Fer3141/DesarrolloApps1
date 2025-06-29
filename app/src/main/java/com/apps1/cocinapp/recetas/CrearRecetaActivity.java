@@ -17,8 +17,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.apps1.cocinapp.R;
 import com.apps1.cocinapp.login.LoginActivity;
 import com.apps1.cocinapp.main.MainActivity;
+import com.apps1.cocinapp.register.ApiService;
+import com.apps1.cocinapp.register.RetrofitClient;
 import com.apps1.cocinapp.session.SharedPreferencesHelper;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class CrearRecetaActivity extends AppCompatActivity {
 
@@ -46,6 +56,7 @@ public class CrearRecetaActivity extends AppCompatActivity {
         estaLogueado = SharedPreferencesHelper.hayToken(this);
         menuOpciones = findViewById(R.id.menuOpciones);
 
+
         LayoutInflater inflater = LayoutInflater.from(this);
 
         // Agregar nuevo ingrediente
@@ -62,10 +73,67 @@ public class CrearRecetaActivity extends AppCompatActivity {
 
         // Acción de publicación (a completar con lógica real)
         publicarBtn.setOnClickListener(v -> {
-            // Aquí podrías recoger todos los datos y guardarlos o enviarlos
-            // Por ahora solo cerrar o mostrar mensaje
-            finish();
+
+            String titulo = tituloInput.getText().toString().trim();
+            String descripcion = descripcionInput.getText().toString().trim();
+
+            List<IngredienteDTO> ingredientes = new ArrayList<>();
+            for (int i = 0; i < contenedorIngredientes.getChildCount(); i++) {
+                View view = contenedorIngredientes.getChildAt(i);
+                EditText nombreInput = view.findViewById(R.id.nombreIngredienteInput);
+                EditText cantidadInput = view.findViewById(R.id.cantidadIngredienteInput);
+
+                String nombre = nombreInput.getText().toString().trim();
+                String cantidadStr = cantidadInput.getText().toString().trim();
+
+                if (!nombre.isEmpty() && !cantidadStr.isEmpty()) {
+                    try {
+                        float cantidad = Float.parseFloat(cantidadStr);
+                        ingredientes.add(new IngredienteDTO(nombre, cantidad));
+                    } catch (NumberFormatException ignored) {}
+                }
+            }
+
+            List<PasoDTO> pasos = new ArrayList<>();
+            for (int i = 0; i < contenedorPasos.getChildCount(); i++) {
+                View view = contenedorPasos.getChildAt(i);
+                EditText tituloPaso = view.findViewById(R.id.tituloPasoInput);
+                EditText descripcionPaso = view.findViewById(R.id.descripcionPasoInput);
+
+                String tituloP = tituloPaso.getText().toString().trim();
+                String descP = descripcionPaso.getText().toString().trim();
+
+                if (!tituloP.isEmpty() && !descP.isEmpty()) {
+                    pasos.add(new PasoDTO(tituloP, descP));
+                }
+            }
+
+            RecetaDTO recetaDTO = new RecetaDTO(pasos, ingredientes, descripcion, titulo);
+
+            // Enviar al backend
+            ApiService api = RetrofitClient.getInstance().getApi();
+            String token = SharedPreferencesHelper.obtenerToken(this);
+            Call<Void> call = api.crearReceta("Bearer " + token, recetaDTO);
+
+            call.enqueue(new Callback<Void>() {
+                @Override
+                public void onResponse(Call<Void> call, Response<Void> response) {
+                    if (response.isSuccessful()) {
+                        Toast.makeText(CrearRecetaActivity.this, "Receta publicada", Toast.LENGTH_SHORT).show();
+                        finish(); // volver
+                    } else {
+                        Toast.makeText(CrearRecetaActivity.this, "Error al publicar receta", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Void> call, Throwable t) {
+                    Toast.makeText(CrearRecetaActivity.this, "Error de red", Toast.LENGTH_SHORT).show();
+                }
+            });
         });
+
+
 
         BottomNavigationView bottomNav = findViewById(R.id.bottomNavigation);
         bottomNav.setOnItemSelectedListener(item -> {
