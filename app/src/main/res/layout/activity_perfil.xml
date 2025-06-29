@@ -57,6 +57,46 @@
             android:backgroundTint="#FFA726"
             android:textColor="#FFF" />
 
+
+        <LinearLayout
+            android:id="@+id/formAlumnoLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="visible"
+            android:padding="8dp">
+
+            <TextView
+                android:text="Datos del Alumno"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="#E68523"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <EditText
+                android:id="@+id/editTramiteDNI"
+                android:hint="Nro Trámite DNI"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <EditText
+                android:id="@+id/editNroTarjeta"
+                android:hint="Nro Tarjeta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <!-- Botón para guardar datos -->
+            <Button
+                android:id="@+id/btnGuardarAlumno"
+                android:text="Guardar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#FF9800"
+                android:textColor="#FFFFFF"
+                android:layout_marginTop="8dp" />
+        </LinearLayout>
+
         <!-- Solo si NO es alumno -->
         <Button
             android:id="@+id/btnQuieroSerAlumno"
@@ -66,6 +106,8 @@
             android:layout_marginTop="8dp"
             android:backgroundTint="#FFD54F"
             android:textColor="#E68523" />
+
+
 
         <!-- Sección visible solo si es alumno -->
         <LinearLayout
