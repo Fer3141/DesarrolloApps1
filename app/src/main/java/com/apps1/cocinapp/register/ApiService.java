@@ -5,6 +5,7 @@ import com.apps1.cocinapp.data.usuarios;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.Field;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
@@ -40,10 +41,11 @@ public interface ApiService {
     @POST("/api/auth/verificar-codigo-recuperacion")
     Call<ResponseBody> verificarCodigoRecuperacion(@Body CodigoVerificacionRequest request);
 
-    @PUT("usuarios/editar-biografia")
-    Call<Void> editarBiografia(@Query("idUsuario") Long idUsuario, @Query("biografia") String biografia);
+    @GET("api/obtener-biografia")
+    Call<ResponseBody> obtenerBiografia(@Header("Authorization") String authHeader);
 
-    @GET("usuarios/obtener-biografia")
-    Call<String> obtenerBiografia(@Query("idUsuario") Long idUsuario);
+    @PUT("api/editar-biografia")
+    Call<Void> actualizarBiografia(@Header("Authorization") String token, @Query("biografia") String biografia);
+
 }
 
