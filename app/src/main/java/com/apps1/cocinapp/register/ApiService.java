@@ -1,6 +1,7 @@
 package com.apps1.cocinapp.register;
 
 import com.apps1.cocinapp.data.usuarios;
+import com.apps1.cocinapp.usuario.PerfilDTO;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -41,8 +42,8 @@ public interface ApiService {
     @POST("/api/auth/verificar-codigo-recuperacion")
     Call<ResponseBody> verificarCodigoRecuperacion(@Body CodigoVerificacionRequest request);
 
-    @GET("api/obtener-biografia")
-    Call<ResponseBody> obtenerBiografia(@Header("Authorization") String authHeader);
+    @GET("api/obtener-perfil")
+    Call<PerfilDTO> obtenerPerfil(@Header("Authorization") String authHeader);
 
     @PUT("api/editar-biografia")
     Call<Void> actualizarBiografia(@Header("Authorization") String token, @Query("biografia") String biografia);

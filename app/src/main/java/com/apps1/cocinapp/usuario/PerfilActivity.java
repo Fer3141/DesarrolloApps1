@@ -62,37 +62,32 @@ public class PerfilActivity extends AppCompatActivity {
             seccionAlumno.setVisibility(View.GONE);
         }
 
-        obtenerBiografia();
+        obtenerPerfil();
 
         btnGuardarBiografia.setOnClickListener(v -> guardarBiografia());
 
     }
 
 
-    private void obtenerBiografia() {
+    private void obtenerPerfil() {
         ApiService api = RetrofitClient.getInstance().getApi();
         String token = SharedPreferencesHelper.obtenerToken(this);
 
-        Call<ResponseBody> call = api.obtenerBiografia("Bearer " + token);
-
-        call.enqueue(new Callback<ResponseBody>() {
+        Call<PerfilDTO> call = api.obtenerPerfil("Bearer " + token);
+        call.enqueue(new Callback<PerfilDTO>() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                try {
-                    if (response.isSuccessful() && response.body() != null) {
-                        String texto = response.body().string(); // ¡acá sí!
-                        biografiaInput.setText(texto);
-                    } else {
-                        Toast.makeText(PerfilActivity.this, "Error inesperado", Toast.LENGTH_SHORT).show();
-                    }
-                } catch (Exception e) {
-                    Toast.makeText(PerfilActivity.this, "Error al leer respuesta", Toast.LENGTH_SHORT).show();
+            public void onResponse(Call<PerfilDTO> call, Response<PerfilDTO> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    nombrePerfil.setText(response.body().getNombre());
+                    biografiaInput.setText(response.body().getBiografia());
+                } else {
+                    Toast.makeText(PerfilActivity.this, "Error al obtener perfil", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Toast.makeText(PerfilActivity.this, "Error al obtener biografía", Toast.LENGTH_SHORT).show();
+            public void onFailure(Call<PerfilDTO> call, Throwable t) {
+                Toast.makeText(PerfilActivity.this, "Error al conectar", Toast.LENGTH_SHORT).show();
             }
         });
     }
