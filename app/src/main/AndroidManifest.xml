@@ -45,6 +45,8 @@
         <activity android:name=".register.RegisterCodeActivity" />
         <activity android:name=".register.RegisterCompleteActivity" />
         <activity android:name=".recetas.CrearRecetaActivity" />
+        <activity android:name=".usuario.PerfilActivity" />
+
 
 
 

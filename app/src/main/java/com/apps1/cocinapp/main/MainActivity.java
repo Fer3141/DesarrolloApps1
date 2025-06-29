@@ -29,6 +29,8 @@ import com.apps1.cocinapp.session.SharedPreferencesHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.apps1.cocinapp.usuario.PerfilActivity;
 import com.apps1.cocinapp.utils.JwtUtils;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -179,10 +181,12 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(this, "Ir a perfil", Toast.LENGTH_SHORT).show();
                     String rol = SharedPreferencesHelper.obtenerRol(this);
                     if (rol.equals("alumno")) {
-                        Toast.makeText(this, "alumno", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(this, "alumno", Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(this, "usuario", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(this, "usuario", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(this, "usuario", Toast.LENGTH_SHORT).show();
                     }
+                     startActivity(new Intent(this, PerfilActivity.class));
                 }
                 return true;
             }

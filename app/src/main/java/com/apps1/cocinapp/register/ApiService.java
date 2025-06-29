@@ -6,8 +6,12 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.POST;
 import okhttp3.ResponseBody;
+import retrofit2.http.PUT;
+import retrofit2.http.Query;
+
 public interface ApiService {
 
     // paso 1 – registro inicial
@@ -36,5 +40,10 @@ public interface ApiService {
     @POST("/api/auth/verificar-codigo-recuperacion")
     Call<ResponseBody> verificarCodigoRecuperacion(@Body CodigoVerificacionRequest request);
 
+    @PUT("usuarios/editar-biografia")
+    Call<Void> editarBiografia(@Query("idUsuario") Long idUsuario, @Query("biografia") String biografia);
+
+    @GET("usuarios/obtener-biografia")
+    Call<String> obtenerBiografia(@Query("idUsuario") Long idUsuario);
 }
 
