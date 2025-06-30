@@ -1,28 +1,31 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:layout_marginTop="8dp"
-    android:gravity="center_vertical">
+    android:orientation="vertical"
+    android:padding="8dp">
 
     <EditText
-        android:id="@+id/nombreIngredienteInput"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="2"
-        android:hint="Ingrediente..."
-        android:padding="8dp"
-        android:background="@android:drawable/edit_text" />
+        android:id="@+id/inputNombreIngrediente"
+        android:hint="Ingrediente"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
     <EditText
-        android:id="@+id/cantidadIngredienteInput"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:id="@+id/inputCantidadIngrediente"
         android:hint="Cantidad"
-        android:inputType="numberDecimal"
-        android:padding="8dp"
-        android:background="@android:drawable/edit_text"
-        android:layout_marginStart="8dp" />
+        android:inputType="number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <EditText
+        android:id="@+id/inputUnidadIngrediente"
+        android:hint="Unidad"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <EditText
+        android:id="@+id/inputObsIngrediente"
+        android:hint="Observaciones (opcional)"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 </LinearLayout>

@@ -2,54 +2,157 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFF5E9"
-    android:padding="24dp">
+    android:background="@color/beige_claro"
+    android:padding="16dp">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal">
+        android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/detalleImagen"
+        <!-- imagen de la receta -->
+
+        <!-- titulo y autor -->
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:scaleType="centerCrop"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:padding="16dp">
+            <ImageView
+                android:id="@+id/detalleImagen"
+                android:layout_width="313dp"
+                android:layout_height="187dp"
+                android:layout_marginBottom="12dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/sample_pizza" />
+
+            <TextView
+                android:id="@+id/detalleTitulo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:text="Pizza Estilo Italiana"
+                android:textColor="@color/black"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/detalleAutor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Por Roberto S."
+                android:textSize="14sp"
+                android:textColor="#777"
+                android:layout_marginBottom="4dp" />
+
+            <!-- estrellas promedio -->
+            <RatingBar
+                android:scaleX="0.5"
+                android:scaleY="0.5"
+                android:id="@+id/detalleRating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:numStars="5"
+                android:stepSize="0.5"
+                android:isIndicator="true"
+
+                android:layout_marginBottom="8dp" />
+        </LinearLayout>
+
+        <!-- porciones y cantidad de personas -->
+        <TextView
+            android:id="@+id/detalleCantidad"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rinde 8 porciones para 4 personas"
+            android:textColor="@color/naranja"
+            android:textStyle="bold"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- descripcion -->
+        <TextView
+            android:id="@+id/detalleDescripcion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Descripción de la receta..."
+            android:textSize="14sp"
+            android:textColor="@color/black"
             android:layout_marginBottom="16dp" />
 
+        <!-- ingredientes -->
         <TextView
-            android:id="@+id/detalleTitulo"
-            android:textSize="22sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ingredientes"
             android:textStyle="bold"
-            android:textColor="#E68523"
-            android:layout_marginBottom="8dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:textSize="18sp"
+            android:layout_marginBottom="8dp" />
 
+        <LinearLayout
+            android:id="@+id/contenedorIngredientes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp" />
+
+        <!-- pasos -->
         <TextView
-            android:id="@+id/detalleAutor"
-            android:textSize="16sp"
-            android:textColor="#333333"
-            android:layout_marginBottom="8dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="Pasos"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:layout_marginBottom="8dp" />
+
+        <LinearLayout
+            android:id="@+id/contenedorPasos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp" />
+
+        <!-- comentarios -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Comentarios"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:layout_marginBottom="8dp" />
+
+        <EditText
+            android:id="@+id/inputComentario"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Escribe un comentario..."
+            android:background="@android:drawable/edit_text"
+            android:padding="12dp"
+            android:layout_marginBottom="8dp" />
 
         <RatingBar
-            android:id="@+id/detalleRating"
-            android:numStars="5"
-            android:stepSize="0.5"
-            android:isIndicator="true"
-            android:layout_marginBottom="16dp"
+            android:id="@+id/ratingUsuario"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:numStars="5"
+            android:stepSize="1.0"
+            android:scaleX="0.6"
+            android:scaleY="0.6"
+            android:layout_marginBottom="8dp" />
 
-        <TextView
-            android:text="Aquí irán los ingredientes, pasos y más info en próximas versiones."
-            android:textColor="#555555"
-            android:textSize="14sp"
+        <Button
+            android:id="@+id/btnEnviarComentario"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Enviar" />
+
+        <!-- lista de comentarios -->
+        <LinearLayout
+            android:id="@+id/contenedorComentarios"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="16dp" />
 
     </LinearLayout>
 </ScrollView>

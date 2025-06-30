@@ -1,4 +1,4 @@
-package com.apps1.cocinapp.register;
+package com.apps1.cocinapp.api;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;

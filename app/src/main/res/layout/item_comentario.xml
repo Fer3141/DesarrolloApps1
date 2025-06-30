@@ -8,29 +8,31 @@
     android:elevation="1dp">
 
     <TextView
-        android:id="@+id/numeroPaso"
+        android:id="@+id/autorComentario"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="1"
-        android:textColor="@color/naranja"
+        android:text="usuario"
         android:textStyle="bold"
-        android:textSize="16sp"
+        android:textColor="@color/naranja"
+        android:textSize="14sp"
         android:layout_marginBottom="4dp" />
 
     <TextView
-        android:id="@+id/textoPaso"
+        android:id="@+id/textoComentario"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="mezclar todo"
+        android:text="muy buena receta"
+        android:textSize="14sp"
         android:textColor="@color/black"
-        android:textSize="14sp" />
+        android:layout_marginBottom="4dp" />
 
-    <ImageView
-        android:id="@+id/imagenPaso"
-        android:layout_width="match_parent"
-        android:layout_height="180dp"
-        android:layout_marginTop="8dp"
-        android:scaleType="centerCrop"
-        android:visibility="gone" />
-
+    <RatingBar
+        android:id="@+id/ratingComentario"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:numStars="5"
+        android:stepSize="1.0"
+        android:isIndicator="true"
+        android:scaleX="0.8"
+        android:scaleY="0.8" />
 </LinearLayout>

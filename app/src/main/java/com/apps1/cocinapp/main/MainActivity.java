@@ -1,8 +1,8 @@
+// actualizado para conectar al backend y cargar recetas reales al iniciar
 package com.apps1.cocinapp.main;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -21,20 +21,24 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.apps1.cocinapp.R;
-import com.apps1.cocinapp.data.Receta;
+import com.apps1.cocinapp.dto.RecetaResumenDTO;
 import com.apps1.cocinapp.login.LoginActivity;
 import com.apps1.cocinapp.receta.RecetaAdapter;
 import com.apps1.cocinapp.recetas.CrearRecetaActivity;
+import com.apps1.cocinapp.api.RetrofitClient;
 import com.apps1.cocinapp.session.SharedPreferencesHelper;
+import com.apps1.cocinapp.usuario.PerfilActivity;
+import com.apps1.cocinapp.utils.JwtUtils;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.apps1.cocinapp.usuario.PerfilActivity;
-import com.apps1.cocinapp.utils.JwtUtils;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
-import org.json.JSONObject;
 public class MainActivity extends AppCompatActivity {
 
     DrawerLayout drawerLayout;
@@ -42,16 +46,11 @@ public class MainActivity extends AppCompatActivity {
     EditText searchBox;
     RecetaAdapter adapter;
     RecyclerView recyclerView;
-
-    List<Receta> recetasRecientes = new ArrayList<>();
-    List<Receta> recetasPopulares = new ArrayList<>();
-    List<Receta> cursos = new ArrayList<>();
+    List<RecetaResumenDTO> recetasRecientes = new ArrayList<>();
 
     BottomNavigationView bottomNav;
-
     private boolean estaLogueado;
     LinearLayout menuOpciones;
-
     Button btnCrearReceta;
 
     @Override
@@ -75,13 +74,10 @@ public class MainActivity extends AppCompatActivity {
         btnCrearReceta = findViewById(R.id.btnCrearReceta);
 
         estaLogueado = false;
-        SharedPreferences prefs = getSharedPreferences("miapp", MODE_PRIVATE);
-
 
         ImageButton menuButton = findViewById(R.id.menuButton);
         menuButton.setOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
 
-        // Mostrar u ocultar elementos según sesión
         if (SharedPreferencesHelper.hayToken(this)) {
             navLogin.setVisibility(View.GONE);
             navLogout.setVisibility(View.VISIBLE);
@@ -100,14 +96,6 @@ public class MainActivity extends AppCompatActivity {
             recyclerView.setVisibility(View.VISIBLE);
         }
 
-        // Datos de ejemplo
-        recetasRecientes.add(new Receta("Pizza", "Roberto S.", R.drawable.sample_pizza, 4.5f));
-        recetasRecientes.add(new Receta("Empanadas", "Clara R.", R.drawable.sample_empanadas, 3.5f));
-        recetasPopulares.add(new Receta("Tarta de choclo", "Luis M.", R.drawable.sample_tarta, 5.0f));
-        recetasPopulares.add(new Receta("Fideos al pesto", "Laura J.", R.drawable.sample_fideos, 4.8f));
-        cursos.add(new Receta("Curso Pan Casero", "Chef Emma", R.drawable.sample_curso_pan, 4.7f));
-        cursos.add(new Receta("Curso Pastas", "Chef Mateo", R.drawable.sample_curso_pastas, 4.9f));
-
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new RecetaAdapter(this, recetasRecientes);
         recyclerView.setAdapter(adapter);
@@ -121,18 +109,17 @@ public class MainActivity extends AppCompatActivity {
         });
 
         tabRecent.setOnClickListener(v -> {
-            adapter.actualizarLista(recetasRecientes);
-            Toast.makeText(this, "Mostrando más recientes", Toast.LENGTH_SHORT).show();
+            cargarRecetas();
+            Toast.makeText(this, "mostrando mas recientes", Toast.LENGTH_SHORT).show();
         });
 
         tabRecipes.setOnClickListener(v -> {
-            adapter.actualizarLista(recetasPopulares);
-            Toast.makeText(this, "Mostrando recetas populares", Toast.LENGTH_SHORT).show();
+            cargarRecetas();
+            Toast.makeText(this, "mostrando recetas populares", Toast.LENGTH_SHORT).show();
         });
 
         tabCourses.setOnClickListener(v -> {
-            adapter.actualizarLista(cursos);
-            Toast.makeText(this, "Mostrando cursos", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "vista de cursos todavia no conectada", Toast.LENGTH_SHORT).show();
         });
 
         TextView userWelcome = findViewById(R.id.userWelcome);
@@ -156,41 +143,21 @@ public class MainActivity extends AppCompatActivity {
             int itemId = item.getItemId();
 
             if (itemId == R.id.nav_home) {
-                // Siempre va al inicio
-                Intent intent = new Intent(MainActivity.this, MainActivity.class);
-                startActivity(intent);
+                startActivity(new Intent(MainActivity.this, MainActivity.class));
                 return true;
-
             } else if (itemId == R.id.nav_menu) {
-                // Si está logueado, va a opciones
                 if (estaLogueado) {
-                    Toast.makeText(this, "Ir a opciones", Toast.LENGTH_SHORT).show();
-                    if (menuOpciones.getVisibility() == View.GONE) {
-                        menuOpciones.setVisibility(View.VISIBLE);
-                    } else {
-                        menuOpciones.setVisibility(View.GONE);
-                    }
+                    menuOpciones.setVisibility(menuOpciones.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
                 }
                 return true;
-
             } else if (itemId == R.id.nav_perfil) {
                 if (!estaLogueado) {
-                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                    startActivity(intent);
+                    startActivity(new Intent(MainActivity.this, LoginActivity.class));
                 } else {
-                    Toast.makeText(this, "Ir a perfil", Toast.LENGTH_SHORT).show();
-                    String rol = SharedPreferencesHelper.obtenerRol(this);
-                    if (rol.equals("alumno")) {
-                        //Toast.makeText(this, "alumno", Toast.LENGTH_SHORT).show();
-                    } else {
-                        //Toast.makeText(this, "usuario", Toast.LENGTH_SHORT).show();
-                        //Toast.makeText(this, "usuario", Toast.LENGTH_SHORT).show();
-                    }
-                     startActivity(new Intent(this, PerfilActivity.class));
+                    startActivity(new Intent(this, PerfilActivity.class));
                 }
                 return true;
             }
-
             return false;
         });
 
@@ -199,6 +166,26 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        cargarRecetas();
+    }
+
+    private void cargarRecetas() {
+        RetrofitClient.getInstance().getApi().getRecetas().enqueue(new Callback<List<RecetaResumenDTO>>() {
+            @Override
+            public void onResponse(Call<List<RecetaResumenDTO>> call, Response<List<RecetaResumenDTO>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    recetasRecientes = response.body();
+                    adapter.actualizarLista(recetasRecientes);
+                } else {
+                    Toast.makeText(MainActivity.this, "no se pudo cargar recetas", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<RecetaResumenDTO>> call, Throwable t) {
+                Toast.makeText(MainActivity.this, "error de red", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     public boolean hayInternet() {

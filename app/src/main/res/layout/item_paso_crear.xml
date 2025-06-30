@@ -1,0 +1,37 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp"
+    android:background="@android:color/white"
+    android:layout_marginBottom="8dp"
+    android:elevation="1dp">
+
+    <!-- descripcion del paso -->
+    <EditText
+        android:id="@+id/inputTextoPaso"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="descripcion del paso"
+        android:padding="8dp"
+        android:background="@android:drawable/edit_text" />
+
+    <!-- boton para elegir foto -->
+    <Button
+        android:id="@+id/btnAgregarFotoPaso"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Agregar foto"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="#E68523"
+        android:textColor="#FFFFFF" />
+
+    <!-- preview de la imagen elegida -->
+    <ImageView
+        android:id="@+id/imagenPreviewPaso"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:layout_marginTop="8dp"
+        android:scaleType="centerCrop"
+        android:visibility="gone" />
+</LinearLayout>

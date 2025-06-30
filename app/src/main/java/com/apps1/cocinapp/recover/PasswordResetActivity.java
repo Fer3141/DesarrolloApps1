@@ -10,9 +10,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.apps1.cocinapp.R;
 import com.apps1.cocinapp.login.LoginActivity;
-import com.apps1.cocinapp.register.ApiService;
 import com.apps1.cocinapp.register.PasswordResetRequest;
-import com.apps1.cocinapp.register.RetrofitClient;
+import com.apps1.cocinapp.api.RetrofitClient;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;

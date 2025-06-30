@@ -9,69 +9,79 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.apps1.cocinapp.R;
-import com.apps1.cocinapp.data.Receta;
+import com.apps1.cocinapp.dto.RecetaResumenDTO;
 import com.apps1.cocinapp.recetas.DetalleRecetaActivity;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 public class RecetaAdapter extends RecyclerView.Adapter<RecetaAdapter.RecetaViewHolder> {
-    private List<Receta> recetas;
+
     private Context context;
+    private List<RecetaResumenDTO> lista;
 
-    public RecetaAdapter(Context context, List<Receta> recetas) {
+    public RecetaAdapter(Context context, List<RecetaResumenDTO> lista) {
         this.context = context;
-        this.recetas = recetas;
+        this.lista = lista;
+    }
+
+    @NonNull
+    @Override
+    public RecetaViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View vista = LayoutInflater.from(context).inflate(R.layout.card_receta, parent, false);
+        return new RecetaViewHolder(vista);
     }
 
     @Override
-    public RecetaViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(context).inflate(R.layout.card_receta, parent, false);
-        return new RecetaViewHolder(v);
-    }
+    public void onBindViewHolder(@NonNull RecetaViewHolder holder, int position) {
+        RecetaResumenDTO receta = lista.get(position);
 
-    @Override
-    public void onBindViewHolder(RecetaViewHolder holder, int position) {
-        Receta r = recetas.get(position);
-        holder.titulo.setText(r.getTitulo());
-        holder.autor.setText(r.getAutor());
-        holder.imagen.setImageResource(r.getImagenResId());
-        holder.rating.setRating(r.getRating());
+        holder.nombreReceta.setText(receta.nombreReceta);
+        holder.nombreUsuario.setText(receta.nombreUsuario);
+        holder.valoracionReceta.setRating((float) receta.promedio);
+
+        // si la url es válida usamos picasso
+        if (receta.fotoPrincipal != null && !receta.fotoPrincipal.isEmpty()) {
+            Picasso.get()
+                    .load(receta.fotoPrincipal)
+                    .placeholder(R.drawable.pholder) // imagen por defecto
+                    .into(holder.imagenReceta);
+        } else {
+            holder.imagenReceta.setImageResource(R.drawable.pholder);
+        }
 
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, DetalleRecetaActivity.class);
-            intent.putExtra("titulo", r.getTitulo());
-            intent.putExtra("autor", r.getAutor());
-            intent.putExtra("rating", r.getRating());
-            intent.putExtra("imagen", r.getImagenResId());
+            intent.putExtra("idReceta", receta.idReceta); // mandás el ID
             context.startActivity(intent);
         });
     }
 
     @Override
     public int getItemCount() {
-        return recetas.size();
+        return lista.size();
     }
 
-    public static class RecetaViewHolder extends RecyclerView.ViewHolder {
-        ImageView imagen;
-        TextView titulo, autor;
-        RatingBar rating;
-
-        public RecetaViewHolder(View itemView) {
-            super(itemView);
-            imagen = itemView.findViewById(R.id.imagenReceta);
-            titulo = itemView.findViewById(R.id.tituloReceta);
-            autor = itemView.findViewById(R.id.autorReceta);
-            rating = itemView.findViewById(R.id.ratingReceta);
-        }
-    }
-
-    public void actualizarLista(List<Receta> nuevasRecetas) {
-        this.recetas = nuevasRecetas;
+    public void actualizarLista(List<RecetaResumenDTO> nuevas) {
+        this.lista = nuevas;
         notifyDataSetChanged();
     }
 
+    static class RecetaViewHolder extends RecyclerView.ViewHolder {
+        ImageView imagenReceta;
+        TextView nombreReceta, nombreUsuario;
+        RatingBar valoracionReceta;
+
+        public RecetaViewHolder(@NonNull View itemView) {
+            super(itemView);
+            imagenReceta = itemView.findViewById(R.id.imagenReceta);
+            nombreReceta = itemView.findViewById(R.id.tituloReceta);
+            nombreUsuario = itemView.findViewById(R.id.autorReceta);
+            valoracionReceta = itemView.findViewById(R.id.ratingReceta);
+        }
+    }
 }

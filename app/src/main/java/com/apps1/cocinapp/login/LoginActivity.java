@@ -2,9 +2,9 @@ package com.apps1.cocinapp.login;
 import okhttp3.ResponseBody;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,15 +12,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.apps1.cocinapp.R;
 import com.apps1.cocinapp.main.MainActivity;
 import com.apps1.cocinapp.recover.PasswordRecoveryActivity;
-import com.apps1.cocinapp.register.ApiService;
+import com.apps1.cocinapp.api.ApiService;
 import com.apps1.cocinapp.register.LoginRequest;
 import com.apps1.cocinapp.register.RegisterStartActivity;
-import com.apps1.cocinapp.register.RetrofitClient;
+import com.apps1.cocinapp.api.RetrofitClient;
 import com.apps1.cocinapp.session.SharedPreferencesHelper;
 
 import org.json.JSONObject;
 
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -56,14 +55,16 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                     if (response.isSuccessful() && response.body() != null) {
-                        String token;
-                        String rol;
                         try {
-                            token = response.body().string();
-                            JSONObject payload = JwtUtils.decodePayload(token);
-                            rol = payload.getString("rol");
+                            String responseBody = response.body().string();
+                            JSONObject json = new JSONObject(responseBody);
+                            String token = json.getString("token");
+
+                            Log.d("LOGIN_DEBUG", "token recibido: " + token);
+
+
                             SharedPreferencesHelper.guardarToken(LoginActivity.this, token);
-                            SharedPreferencesHelper.guardarRol(LoginActivity.this, rol);
+
                             Toast.makeText(LoginActivity.this, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(LoginActivity.this, MainActivity.class));
                             finish();

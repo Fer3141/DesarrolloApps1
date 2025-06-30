@@ -66,7 +66,7 @@ public class SharedPreferencesHelper {
             JSONObject jsonObject = new JSONObject(jsonToken);
             return jsonObject.getString("token");
         } catch (Exception e) {
-            return ""; // en caso de error devolvés vacío
+            return ""; // en caso de error se devuelve vacio
         }
     }
 
