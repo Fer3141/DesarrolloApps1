@@ -24,7 +24,7 @@ import com.apps1.cocinapp.R;
 import com.apps1.cocinapp.dto.RecetaResumenDTO;
 import com.apps1.cocinapp.login.LoginActivity;
 import com.apps1.cocinapp.receta.RecetaAdapter;
-import com.apps1.cocinapp.recetas.CrearRecetaActivity;
+import com.apps1.cocinapp.recetas.VerificarNombreRecetaActivity;
 import com.apps1.cocinapp.api.RetrofitClient;
 import com.apps1.cocinapp.session.SharedPreferencesHelper;
 import com.apps1.cocinapp.usuario.PerfilActivity;
@@ -165,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         btnCrearReceta.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, CrearRecetaActivity.class);
+            Intent intent = new Intent(MainActivity.this, VerificarNombreRecetaActivity.class);
             startActivity(intent);
         });
 
