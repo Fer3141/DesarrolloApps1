@@ -47,7 +47,6 @@ public class MainActivity extends AppCompatActivity {
     RecetaAdapter adapter;
     RecyclerView recyclerView;
     List<RecetaResumenDTO> recetasRecientes = new ArrayList<>();
-
     BottomNavigationView bottomNav;
     private boolean estaLogueado;
     LinearLayout menuOpciones;
@@ -74,6 +73,10 @@ public class MainActivity extends AppCompatActivity {
         btnCrearReceta = findViewById(R.id.btnCrearReceta);
 
         estaLogueado = false;
+
+        TextView tabRecent = findViewById(R.id.tabRecent);   // Mejores feed
+        TextView tabRecipes = findViewById(R.id.tabRecipes); // Nuevo feed
+
 
         ImageButton menuButton = findViewById(R.id.menuButton);
         menuButton.setOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
@@ -109,13 +112,13 @@ public class MainActivity extends AppCompatActivity {
         });
 
         tabRecent.setOnClickListener(v -> {
-            cargarRecetas();
-            Toast.makeText(this, "mostrando mas recientes", Toast.LENGTH_SHORT).show();
+            cargarRecetasMejores();
+            Toast.makeText(this, "mostrando recetas populares", Toast.LENGTH_SHORT).show();
         });
 
         tabRecipes.setOnClickListener(v -> {
-            cargarRecetas();
-            Toast.makeText(this, "mostrando recetas populares", Toast.LENGTH_SHORT).show();
+            cargarRecetasUltimas();
+            Toast.makeText(this, "mostrando recetas nuevas", Toast.LENGTH_SHORT).show();
         });
 
         tabCourses.setOnClickListener(v -> {
@@ -178,6 +181,45 @@ public class MainActivity extends AppCompatActivity {
                     adapter.actualizarLista(recetasRecientes);
                 } else {
                     Toast.makeText(MainActivity.this, "no se pudo cargar recetas", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<RecetaResumenDTO>> call, Throwable t) {
+                Toast.makeText(MainActivity.this, "error de red", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+    private void cargarRecetasUltimas() {
+        RetrofitClient.getInstance().getApi().getUltimasRecetas().enqueue(new Callback<List<RecetaResumenDTO>>() {
+            @Override
+            public void onResponse(Call<List<RecetaResumenDTO>> call, Response<List<RecetaResumenDTO>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    recetasRecientes = response.body();
+                    adapter.actualizarLista(recetasRecientes);
+                } else {
+                    Toast.makeText(MainActivity.this, "no se pudieron cargar recetas nuevas", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<RecetaResumenDTO>> call, Throwable t) {
+                Toast.makeText(MainActivity.this, "error de red", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void cargarRecetasMejores() {
+        RetrofitClient.getInstance().getApi().getMejoresRecetas().enqueue(new Callback<List<RecetaResumenDTO>>() {
+            @Override
+            public void onResponse(Call<List<RecetaResumenDTO>> call, Response<List<RecetaResumenDTO>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    recetasRecientes = response.body();
+                    adapter.actualizarLista(recetasRecientes);
+                } else {
+                    Toast.makeText(MainActivity.this, "no se pudieron cargar recetas mejores", Toast.LENGTH_SHORT).show();
                 }
             }
 

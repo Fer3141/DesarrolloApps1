@@ -30,6 +30,13 @@ import retrofit2.http.Query;
 public interface ApiService {
 
     // --- RECETAS ---
+
+    @GET("/recetas/ultimas")
+    Call<List<RecetaResumenDTO>> getUltimasRecetas();
+
+    @GET("/recetas/mejores")
+    Call<List<RecetaResumenDTO>> getMejoresRecetas();
+
     @GET("/recetas")
     Call<List<RecetaResumenDTO>> getRecetas();
 
