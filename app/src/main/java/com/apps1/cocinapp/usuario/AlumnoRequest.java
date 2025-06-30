@@ -6,6 +6,7 @@ public class AlumnoRequest {
     private String nroTramiteDni;
     private String numeroTarjeta;
 
+
     public AlumnoRequest(Long idUsuario) {
         this.idUsuario = idUsuario;
     }

@@ -51,6 +51,7 @@ public class PerfilActivity extends AppCompatActivity {
         editNroTarjeta = findViewById(R.id.editNroTarjeta);
         btnGuardarAlumno = findViewById(R.id.btnGuardarAlumno);
 
+
         idUsuario = SharedPreferencesHelper.obtenerIdUsuario(this);  // Usá el ID, no el token
         String rol = SharedPreferencesHelper.obtenerRol(this);
 
