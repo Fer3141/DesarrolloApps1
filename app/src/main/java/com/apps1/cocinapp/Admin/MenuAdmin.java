@@ -31,53 +31,7 @@ public class MenuAdmin extends AppCompatActivity {
     private List<Receta> recetasPendientes;
     private List<Curso> cursos;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
 
-        // Layout raíz vertical
-        LinearLayout rootLayout = new LinearLayout(this);
-        rootLayout.setOrientation(LinearLayout.VERTICAL);
-        rootLayout.setBackgroundColor(Color.parseColor("#FFF7E6"));
-        rootLayout.setPadding(20, 40, 20, 20);
-
-        // Botones para cambiar de vista
-        btnRecetas = new Button(this);
-        btnRecetas.setText("Recetas");
-        btnRecetas.setBackgroundColor(Color.parseColor("#E58C23"));
-        btnRecetas.setTextColor(Color.WHITE);
-
-        btnCursos = new Button(this);
-        btnCursos.setText("Cursos");
-        btnCursos.setBackgroundColor(Color.parseColor("#F5F5F5"));
-        btnCursos.setTextColor(Color.BLACK);
-
-        LinearLayout topButtons = new LinearLayout(this);
-        topButtons.setOrientation(LinearLayout.HORIZONTAL);
-        topButtons.addView(btnRecetas);
-        topButtons.addView(btnCursos);
-
-        // Contenedor principal dinámico
-        mainContainer = new LinearLayout(this);
-        mainContainer.setOrientation(LinearLayout.VERTICAL);
-        mainContainer.setPadding(10, 30, 10, 10);
-
-        // Añadir al layout
-        rootLayout.addView(topButtons);
-        rootLayout.addView(mainContainer);
-
-        setContentView(rootLayout);
-
-        // Listeners
-        btnRecetas.setOnClickListener(v -> showRecetasMenu());
-        btnCursos.setOnClickListener(v -> cargarCursosConCronogramas());
-
-        // Mock data simulando datos del backend
-        cargarDatosSimulados();
-
-        // Vista inicial
-        showRecetasMenu();
-    }
 
     private void cargarDatosSimulados() {
         recetasPendientes = new ArrayList<>();
