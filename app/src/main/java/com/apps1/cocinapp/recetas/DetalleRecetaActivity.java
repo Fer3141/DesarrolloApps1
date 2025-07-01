@@ -3,6 +3,7 @@ package com.apps1.cocinapp.recetas;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
@@ -38,6 +39,8 @@ public class DetalleRecetaActivity extends AppCompatActivity {
     private Long recetaId;
     private Long usuarioId; // Reemplazar por el ID real
 
+    ImageButton btnFavorito;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +59,7 @@ public class DetalleRecetaActivity extends AppCompatActivity {
         contenedorComentarios = findViewById(R.id.contenedorComentarios);
         inputComentario = findViewById(R.id.inputComentario);
         btnEnviarComentario = findViewById(R.id.btnEnviarComentario);
+        btnFavorito = findViewById(R.id.btnFavorito);
 
         recetaId = getIntent().getLongExtra("idReceta", -1);
 
@@ -67,6 +71,30 @@ public class DetalleRecetaActivity extends AppCompatActivity {
         }
 
         btnEnviarComentario.setOnClickListener(v -> enviarComentario());
+
+
+
+        btnFavorito.setOnClickListener(v -> {
+            Toast.makeText(DetalleRecetaActivity.this, "receta id" + recetaId + " - usuarioId: " + usuarioId, Toast.LENGTH_SHORT).show();
+            ApiService api = RetrofitClient.getInstance().getApi();
+            Call<Void> call = api.agregarFavorito(usuarioId, recetaId);
+            call.enqueue(new Callback<Void>() {
+                @Override
+                public void onResponse(Call<Void> call, Response<Void> response) {
+                    if (response.isSuccessful()) {
+                        Toast.makeText(DetalleRecetaActivity.this, "Receta marcada como favorita", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(DetalleRecetaActivity.this, "Error al marcar como favorita", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Void> call, Throwable t) {
+                    Toast.makeText(DetalleRecetaActivity.this, "Error de conexión", Toast.LENGTH_SHORT).show();
+                }
+            });
+        });
+
     }
 
     private void cargarDetalleReceta() {

@@ -33,6 +33,7 @@ public class CrearRecetaActivity extends AppCompatActivity {
 
     private EditText descripcionInput, porcionesInput, personasInput;
     private Spinner tipoSpinner;
+
     private LinearLayout contenedorIngredientes, contenedorPasos;
     private Button btnAgregarIngrediente, btnAgregarPaso, btnPublicar;
     private ImageView imagenPreviewReceta;

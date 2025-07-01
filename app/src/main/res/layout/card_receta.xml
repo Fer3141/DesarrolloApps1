@@ -6,12 +6,20 @@
     android:background="@android:color/white"
     android:elevation="2dp">
 
-    <ImageView
-        android:id="@+id/imagenReceta"
+    <!-- Imagen con botón de favorito superpuesto -->
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="180dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/sample_pizza" />
+        android:layout_height="180dp">
+
+        <ImageView
+            android:id="@+id/imagenReceta"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/sample_pizza" />
+
+
+    </FrameLayout>
 
     <TextView
         android:id="@+id/tituloReceta"
