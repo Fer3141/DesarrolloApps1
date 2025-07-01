@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="8dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    android:elevation="2dp">
+
+    <ImageView
+        android:id="@+id/imagenRecetaAdmin"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/sample_pizza" />
+
+    <TextView
+        android:id="@+id/tituloRecetaAdmin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nombre de receta"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:layout_marginTop="4dp" />
+
+    <TextView
+        android:id="@+id/autorRecetaAdmin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Autor"
+        android:textSize="14sp"
+        android:textColor="#666666" />
+
+    <TextView
+        android:id="@+id/descripcionRecetaAdmin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Descripción de la receta pendiente de aprobación."
+        android:textSize="14sp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="8dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end">
+
+        <Button
+            android:id="@+id/btnAprobar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Aprobar"
+            android:backgroundTint="#C8E6C9"
+            android:textColor="#2E7D32"
+            android:layout_marginEnd="8dp"/>
+
+        <Button
+            android:id="@+id/btnRechazar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rechazar"
+            android:backgroundTint="#FFCDD2"
+            android:textColor="#C62828" />
+    </LinearLayout>
+</LinearLayout>
