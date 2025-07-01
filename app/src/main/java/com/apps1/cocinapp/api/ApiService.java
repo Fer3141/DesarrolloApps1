@@ -157,13 +157,15 @@ public interface ApiService {
     Call<ResponseBody> verificarCodigoRecuperacion(@Body CodigoVerificacionRequest request);
 
     @GET("api/obtener-perfil")
-    Call<PerfilDTO> obtenerPerfil(@Header("Authorization") String authHeader);
+    Call<PerfilDTO> obtenerPerfil( @Query("idUsuario") Long idAlumno);
 
     @PUT("api/editar-biografia")
-    Call<Void> actualizarBiografia(@Header("Authorization") String token, @Query("biografia") String biografia);
+    Call<Void> actualizarBiografia(@Query("idUsuario") Long idUsuario, @Query("biografia") String biografia);
 
     @PUT("/api/hacer-alumno")
     Call<Void> hacerseAlumno(@Header("Authorization") String authHeader, @Body AlumnoRequest datos);
+
+
 
 
 }

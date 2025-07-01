@@ -15,6 +15,7 @@ import com.apps1.cocinapp.main.MainActivity;
 import com.apps1.cocinapp.api.ApiService;
 import com.apps1.cocinapp.api.RetrofitClient;
 import com.apps1.cocinapp.recetas.MisRecetasActivity;
+import com.apps1.cocinapp.recetas.MisRecetasFavoritasActivity;
 import com.apps1.cocinapp.session.SharedPreferencesHelper;
 
 
@@ -32,10 +33,10 @@ public class PerfilActivity extends AppCompatActivity {
 
     private TextView nombrePerfil;
     private EditText biografiaInput, editTramiteDNI, editNroTarjeta;
-    private Button btnGuardarBiografia, btnCerrarSesion, btnQuieroSerAlumno, btnGuardarAlumno;
+    private Button btnGuardarBiografia, btnCerrarSesion, btnQuieroSerAlumno, btnGuardarAlumno, btnRecetasFavoritas;
     private LinearLayout seccionAlumno, formAlumnoLayout;
 
-
+    private Long usuarioId;
     Long idUsuario;
     Retrofit retrofit;
     @Override
@@ -58,6 +59,7 @@ public class PerfilActivity extends AppCompatActivity {
         editTramiteDNI = findViewById(R.id.editTramiteDNI);
         editNroTarjeta = findViewById(R.id.editNroTarjeta);
         btnGuardarAlumno = findViewById(R.id.btnGuardarAlumno);
+        btnRecetasFavoritas = findViewById(R.id.btnRecetasFavoritas);
 
 
         idUsuario = SharedPreferencesHelper.obtenerIdUsuario(this);  // Usá el ID, no el token
@@ -139,14 +141,22 @@ public class PerfilActivity extends AppCompatActivity {
         });
 
 
+        btnRecetasFavoritas.setOnClickListener(v -> {
+            Intent intent = new Intent(PerfilActivity.this, MisRecetasFavoritasActivity.class);
+            intent.putExtra("favoritas", true); // Indica que son recetas favoritas
+            startActivity(intent);
+        });
+
+
     }
 
 
     private void obtenerPerfil() {
         ApiService api = RetrofitClient.getInstance().getApi();
         String token = SharedPreferencesHelper.obtenerToken(this);
+        usuarioId = SharedPreferencesHelper.obtenerIdUsuario(this);
 
-        Call<PerfilDTO> call = api.obtenerPerfil("Bearer " + token);
+        Call<PerfilDTO> call = api.obtenerPerfil(usuarioId);
         call.enqueue(new Callback<PerfilDTO>() {
             @Override
             public void onResponse(Call<PerfilDTO> call, Response<PerfilDTO> response) {
@@ -170,8 +180,8 @@ public class PerfilActivity extends AppCompatActivity {
         String bio = biografiaInput.getText().toString().trim();
         ApiService api = RetrofitClient.getInstance().getApi();
         String token = SharedPreferencesHelper.obtenerToken(this);
-
-        Call<Void> call = api.actualizarBiografia("Bearer " + token, bio);
+        usuarioId = SharedPreferencesHelper.obtenerIdUsuario(this);
+        Call<Void> call = api.actualizarBiografia(idUsuario, bio);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
