@@ -7,11 +7,13 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
 
     ImageButton searchIcon;
 
+    Spinner spinnerTipo;
+
     RelativeLayout rootLayout;
 
     @Override
@@ -83,11 +87,13 @@ public class MainActivity extends AppCompatActivity {
         menuFiltros = findViewById(R.id.menuFiltros);
         rootLayout = findViewById(R.id.rootLayout);
         btnCerrarFiltros = findViewById(R.id.btnCerrarFiltros);
+        spinnerTipo = findViewById(R.id.spinnerTipo);
 
         estaLogueado = false;
 
         TextView tabRecent = findViewById(R.id.tabRecent);   // Mejores feed
         TextView tabRecipes = findViewById(R.id.tabRecipes); // Nuevo feed
+
 
 
         ImageButton menuButton = findViewById(R.id.menuButton);
@@ -114,6 +120,11 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new RecetaAdapter(this, recetasRecientes);
         recyclerView.setAdapter(adapter);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item,
+                new String[]{"Seleccionar tipo...", "Entrada", "Principal", "Postre"});
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerTipo.setAdapter(adapter);
 
         navLogin.setOnClickListener(v -> startActivity(new Intent(this, LoginActivity.class)));
         navAbout.setOnClickListener(v -> startActivity(new Intent(this, AboutActivity.class)));
