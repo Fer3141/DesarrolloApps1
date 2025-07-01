@@ -49,6 +49,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Nombre de la receta"
+                android:background="@drawable/text_bonito"
                 android:padding="12dp"
                 android:layout_marginBottom="12dp" />
 
@@ -56,6 +57,7 @@
                 android:id="@+id/descripcionInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@drawable/text_bonito"
                 android:hint="Descripción"
                 android:gravity="top"
                 android:minLines="3"
@@ -68,6 +70,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Cantidad de porciones"
+                android:background="@drawable/text_bonito"
                 android:inputType="number"
                 android:padding="12dp"
                 android:layout_marginBottom="12dp" />
@@ -77,6 +80,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Cantidad de personas"
+                android:background="@drawable/text_bonito"
                 android:inputType="number"
                 android:padding="12dp"
                 android:layout_marginBottom="12dp" />
