@@ -236,6 +236,7 @@ public class CrearRecetaActivity extends AppCompatActivity {
         nueva.pasos = pasos;
 
         ApiService api = RetrofitClient.getInstance().getApi();
+
         if ("reemplazar".equals(modo)) {
             Call<Void> borrar = api.borrarReceta(usuarioId, nombreReceta);
             borrar.enqueue(new Callback<Void>() {

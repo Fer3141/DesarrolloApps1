@@ -11,6 +11,8 @@ import com.apps1.cocinapp.api.ApiService;
 import com.apps1.cocinapp.api.RetrofitClient;
 import com.apps1.cocinapp.session.SharedPreferencesHelper;
 
+import java.util.Map;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -53,23 +55,23 @@ public class VerificarNombreRecetaActivity extends AppCompatActivity {
             Toast.makeText(this, "Usuario no encontrado", Toast.LENGTH_SHORT).show();
             return;
         }
-        int usuarioId = userIdLong.intValue();
+        Long userId = SharedPreferencesHelper.obtenerIdUsuario(this);
 
-        // llamo a tu API
         ApiService api = RetrofitClient.getInstance().getApi();
         //LLamar al endpoint del backend
-        //Call<Boolean> call = api.existeRecetaPorUsuarioYNombre(usuarioId, nombre);
+        Call<Map<String, Object>> call = api.verificarNombreReceta(userId, nombre);
         // este endpoint debe devolver true/false
 
-        call.enqueue(new Callback<Boolean>() {
+        call.enqueue(new Callback<Map<String, Object>>() {
             @Override
-            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+            public void onResponse(Call<Map<String, Object>> call, Response<Map<String, Object>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    boolean existe = response.body();
-                    if (existe) {
-                        mostrarDialog(nombre, usuarioId);
+                    Map<String, Object> data = response.body();
+                    Boolean existe = (Boolean) data.get("existe");
+                    if (Boolean.TRUE.equals(existe)) {
+                        mostrarDialog(nombre, userId);
                     } else {
-                        abrirCrearReceta("nuevo", nombre, usuarioId);
+                        abrirCrearReceta("nuevo", nombre, userId);
                     }
                 } else {
                     Toast.makeText(VerificarNombreRecetaActivity.this, "Error consultando nombre", Toast.LENGTH_SHORT).show();
@@ -77,13 +79,13 @@ public class VerificarNombreRecetaActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<Boolean> call, Throwable t) {
+            public void onFailure(Call<Map<String, Object>> call, Throwable t) {
                 Toast.makeText(VerificarNombreRecetaActivity.this, "Error de red", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void mostrarDialog(String nombre, int usuarioId) {
+    private void mostrarDialog(String nombre, Long usuarioId) {
         new AlertDialog.Builder(this)
                 .setTitle("Receta existente")
                 .setMessage("Ya cargaste una receta con este nombre. ¿Qué querés hacer?")
@@ -93,7 +95,7 @@ public class VerificarNombreRecetaActivity extends AppCompatActivity {
                 .show();
     }
 
-    private void abrirCrearReceta(String modo, String nombre, int usuarioId) {
+    private void abrirCrearReceta(String modo, String nombre, Long usuarioId) {
         Intent intent = new Intent(this, CrearRecetaActivity.class);
         intent.putExtra("modo", modo);
         intent.putExtra("nombreReceta", nombre);

@@ -16,6 +16,7 @@ import com.apps1.cocinapp.usuario.AlumnoRequest;
 import com.apps1.cocinapp.usuario.PerfilDTO;
 
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -63,6 +64,19 @@ public interface ApiService {
             @Query("idUsuario") Long idUsuario,
             @Query("idReceta") Long idReceta
     );
+
+    @GET("/recetas/verificar-nombre")
+    Call<Map<String, Object>> verificarNombreReceta(
+            @Query("idUsuario") Long idUsuario,
+            @Query("nombre") String nombre
+    );
+
+    @DELETE("/recetas")
+    Call<Void> eliminarReceta(
+            @Query("idUsuario") Long idUsuario,
+            @Query("idReceta") Long idReceta
+    );
+
 
     // --- CALIFICACIONES ---
     @POST("/calificaciones")
