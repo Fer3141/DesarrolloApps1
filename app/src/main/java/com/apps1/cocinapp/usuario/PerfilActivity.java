@@ -40,6 +40,10 @@ public class PerfilActivity extends AppCompatActivity {
     Retrofit retrofit;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        String token = SharedPreferencesHelper.obtenerToken(this);
+        Log.d("TOKEN_DEBUG", "Token actual: " + token);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_perfil);
 
@@ -114,7 +118,6 @@ public class PerfilActivity extends AppCompatActivity {
 
             AlumnoRequest alumnoRequest = new AlumnoRequest(idUsuario, tramiteDNI, nroTarjeta);
             ApiService api = RetrofitClient.getInstance().getApi();
-            String token = SharedPreferencesHelper.obtenerToken(this);
 
             Call<Void> call = api.hacerseAlumno("Bearer " + token, alumnoRequest);
             call.enqueue(new Callback<Void>() {

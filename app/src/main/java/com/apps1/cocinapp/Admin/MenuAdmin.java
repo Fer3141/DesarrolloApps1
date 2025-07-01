@@ -4,10 +4,20 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.apps1.cocinapp.R;
+import com.apps1.cocinapp.api.ApiService;
+import com.apps1.cocinapp.dto.CronogramaDTO;
+import com.apps1.cocinapp.dto.CursoConCronogramasDTO;
+import com.apps1.cocinapp.api.RetrofitClient;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MenuAdmin extends AppCompatActivity {
 
@@ -57,7 +67,7 @@ public class MenuAdmin extends AppCompatActivity {
 
         // Listeners
         btnRecetas.setOnClickListener(v -> showRecetasMenu());
-        btnCursos.setOnClickListener(v -> showCursosMenu());
+        btnCursos.setOnClickListener(v -> cargarCursosConCronogramas());
 
         // Mock data simulando datos del backend
         cargarDatosSimulados();
@@ -129,68 +139,54 @@ public class MenuAdmin extends AppCompatActivity {
         btnCursos.setTextColor(Color.BLACK);
     }
 
-    private void showCursosMenu() {
-        mainContainer.removeAllViews();
+    private void cargarCursosConCronogramas() {
+        ApiService apiService = RetrofitClient.getInstance().getApi();
+        Call<List<CursoConCronogramasDTO>> call = apiService.getCursosConCronogramas();
 
-        TextView title = new TextView(this);
-        title.setText("GESTIÓN DE CURSOS");
-        title.setTextSize(20);
-        title.setTextColor(Color.parseColor("#5A4635"));
-        mainContainer.addView(title);
-
-        Button btnCrearCurso = new Button(this);
-        btnCrearCurso.setText("+ Crear un curso");
-        btnCrearCurso.setBackgroundColor(Color.parseColor("#E58C23"));
-        btnCrearCurso.setTextColor(Color.WHITE);
-        btnCrearCurso.setOnClickListener(v -> {
-            Toast.makeText(this, "Crear curso (no implementado)", Toast.LENGTH_SHORT).show();
-        });
-        mainContainer.addView(btnCrearCurso);
-
-        for (Curso curso : cursos) {
-            TextView cursoNombre = new TextView(this);
-            cursoNombre.setText("📖 " + curso.nombre);
-            cursoNombre.setTextSize(18);
-            cursoNombre.setPadding(0, 20, 0, 10);
-            mainContainer.addView(cursoNombre);
-
-            for (Cronograma cron : curso.cronogramas) {
-                LinearLayout cronItem = new LinearLayout(this);
-                cronItem.setOrientation(LinearLayout.VERTICAL);
-                cronItem.setPadding(20,10,20,10);
-                cronItem.setBackgroundColor(Color.parseColor("#F0F0F0"));
-
-                TextView cronInfo = new TextView(this);
-                cronInfo.setText("Sede: " + cron.sede + "\nFechas: " + cron.fechaInicio + " - " + cron.fechaFin
-                        + "\nInscritos: " + cron.inscritos + "/" + cron.capacidad);
-                cronItem.addView(cronInfo);
-
-                ImageView qr = new ImageView(this);
-                Glide.with(this).load(cron.urlQr).into(qr);
-                qr.setAdjustViewBounds(true);
-                qr.setMaxHeight(300);
-                cronItem.addView(qr);
-
-                Button btnCancelar = new Button(this);
-                btnCancelar.setText("Cancelar curso");
-                btnCancelar.setBackgroundColor(Color.RED);
-                btnCancelar.setTextColor(Color.WHITE);
-                btnCancelar.setOnClickListener(v -> {
-                    Toast.makeText(this, "Curso cancelado en backend (simulado)", Toast.LENGTH_SHORT).show();
-                    curso.cronogramas.remove(cron);
-                    showCursosMenu();
-                });
-                cronItem.addView(btnCancelar);
-
-                mainContainer.addView(cronItem);
+        call.enqueue(new Callback<List<CursoConCronogramasDTO>>() {
+            @Override
+            public void onResponse(Call<List<CursoConCronogramasDTO>> call, Response<List<CursoConCronogramasDTO>> response) {
+                if (response.isSuccessful()) {
+                    List<CursoConCronogramasDTO> lista = response.body();
+                    mostrarCursosConCronogramas(lista);
+                } else {
+                    Toast.makeText(MenuAdmin.this, "Error al cargar cursos", Toast.LENGTH_SHORT).show();
+                }
             }
+
+            @Override
+            public void onFailure(Call<List<CursoConCronogramasDTO>> call, Throwable t) {
+                Toast.makeText(MenuAdmin.this, "Fallo de conexión", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void mostrarCursosConCronogramas(List<CursoConCronogramasDTO> lista) {
+        StringBuilder builder = new StringBuilder();
+        for (CursoConCronogramasDTO curso : lista) {
+            builder.append("Curso: ").append(curso.descripcion).append("\n");
+            builder.append("Contenidos: ").append(curso.contenidos).append("\n");
+            builder.append("Modalidad: ").append(curso.modalidad).append("\n");
+            builder.append("Precio: $").append(curso.precio).append("\n");
+
+            if (curso.cronogramas.isEmpty()) {
+                builder.append(" -> No tiene cronogramas.\n");
+            } else {
+                for (CronogramaDTO c : curso.cronogramas) {
+                    builder.append(" - Cronograma ID ").append(c.idCronograma)
+                            .append(" en ").append(c.sede)
+                            .append("   Desde: ").append(c.fechaInicio)
+                            .append(" hasta ").append(c.fechaFin)
+                            .append(" | Vacantes: ").append(c.vacantes).append("\n");
+                }
+            }
+            builder.append("\n");
         }
 
-        btnCursos.setBackgroundColor(Color.parseColor("#E58C23"));
-        btnCursos.setTextColor(Color.WHITE);
-        btnRecetas.setBackgroundColor(Color.parseColor("#F5F5F5"));
-        btnRecetas.setTextColor(Color.BLACK);
+        //TextView tvCursos = findViewById(R.id.tvCursosAdmin);
+        //tvCursos.setText(builder.toString());
     }
+
 
     // MODELOS SIMPLES
     static class Receta {

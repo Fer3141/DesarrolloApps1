@@ -2,6 +2,7 @@ package com.apps1.cocinapp.api;
 
 import com.apps1.cocinapp.dto.CalificacionDTO;
 import com.apps1.cocinapp.dto.CalificacionVistaDTO;
+import com.apps1.cocinapp.dto.CursoConCronogramasDTO;
 import com.apps1.cocinapp.dto.CursoDisponibleDTO;
 import com.apps1.cocinapp.dto.NuevaRecetaDTO;
 import com.apps1.cocinapp.dto.RecetaDetalleDTO;
@@ -105,6 +106,25 @@ public interface ApiService {
 
     @GET("/cursos/mis-cursos")
     Call<List<CursoDisponibleDTO>> getMisCursos(@Query("idAlumno") Long idAlumno);
+
+    @POST("/cursos/crearCurso")
+    <CursoDisponibleDTO>
+    Call<Void> crearCurso(
+            @Body CursoDisponibleDTO curso
+    );
+
+    @POST("/cursos/crear-cronograma")
+    Call<Void> crearCronograma(
+            @Query("idCurso") Long idCurso,
+            @Query("idSede") Long idSede,
+            @Query("fechaInicio") String fechaInicio,
+            @Query("fechaFin") String fechaFin,
+            @Query("vacantes") int vacantes
+    );
+
+    @GET("/cursos/admin/cursos-con-cronogramas")
+    Call<List<CursoConCronogramasDTO>> getCursosConCronogramas();
+
 
 
 
