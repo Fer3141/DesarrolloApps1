@@ -23,6 +23,8 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
@@ -141,6 +143,14 @@ public interface ApiService {
     Call<List<CursoConCronogramasDTO>> getCursosConCronogramas();
 
 
+    @FormUrlEncoded
+    @POST("cursos/asistencia/checkin-qr")
+    Call<String> marcarAsistenciaQR(
+            @Field("idAlumno") Long idAlumno,
+            @Field("qr") String qr
+    );
+
+
 
 
     // --- CIRCUITO LOGIN/REGISTER/RECOVER ---
@@ -172,13 +182,15 @@ public interface ApiService {
     Call<ResponseBody> verificarCodigoRecuperacion(@Body CodigoVerificacionRequest request);
 
     @GET("api/obtener-perfil")
-    Call<PerfilDTO> obtenerPerfil(@Header("Authorization") String authHeader);
+    Call<PerfilDTO> obtenerPerfil( @Query("idUsuario") Long idAlumno);
 
     @PUT("api/editar-biografia")
-    Call<Void> actualizarBiografia(@Header("Authorization") String token, @Query("biografia") String biografia);
+    Call<Void> actualizarBiografia(@Query("idUsuario") Long idUsuario, @Query("biografia") String biografia);
 
     @PUT("/api/hacer-alumno")
     Call<Void> hacerseAlumno(@Header("Authorization") String authHeader, @Body AlumnoRequest datos);
+
+
 
 
 }

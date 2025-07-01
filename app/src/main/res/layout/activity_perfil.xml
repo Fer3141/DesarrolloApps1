@@ -41,8 +41,8 @@
             android:layout_marginTop="8dp" />
 
         <Button
-            android:id="@+id/btnRecetasGuardadas"
-            android:text="🍽 Recetas Guardadas"
+            android:id="@+id/btnRecetasFavoritas"
+            android:text="🍽 Recetas Favoritas"
             android:layout_width="match_parent"
             android:layout_marginTop="16dp"
             android:backgroundTint="#FFA726"
@@ -50,7 +50,8 @@
             android:textColor="#FFF" />
 
         <Button
-            android:text="🍲 Mis Recetas"
+            android:id="@+id/btnMisRecetas"
+            android:text="🍲 Mis Recetas Creadas"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:layout_marginTop="8dp"

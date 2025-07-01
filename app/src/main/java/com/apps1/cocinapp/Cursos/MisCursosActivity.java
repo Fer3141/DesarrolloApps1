@@ -1,22 +1,41 @@
 package com.apps1.cocinapp.Cursos;
 
-import android.app.Activity;
-import android.content.ActivityNotFoundException;
-import android.content.Intent;
 import android.os.Bundle;
 import android.widget.*;
 import android.view.View;
 import android.graphics.Color;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.activity.result.ActivityResultLauncher;
+
+import com.apps1.cocinapp.api.ApiService;
+import com.apps1.cocinapp.api.RetrofitClient;
+import com.apps1.cocinapp.session.SharedPreferencesHelper;
+import com.journeyapps.barcodescanner.ScanOptions;
+import com.journeyapps.barcodescanner.ScanContract;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class MisCursosActivity extends Activity {
+public class MisCursosActivity extends AppCompatActivity {
 
     private LinearLayout mainContainer;
-    //private Long idAlumno = getIdUsuario(); // en real, esto se obtiene del login pero no e como se hace
+    private List<CursoInscripto> cursos = new ArrayList<>(); // ejemplo lista
 
-    private List<CursoInscripto> cursos;
+    private final ActivityResultLauncher<ScanOptions> barcodeLauncher = registerForActivityResult(
+            new ScanContract(),
+            result -> {
+                if(result.getContents() != null) {
+                    Toast.makeText(this, "QR: " + result.getContents(), Toast.LENGTH_LONG).show();
+                    manejarAsistenciaConQR(result.getContents());
+                }
+            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,18 +47,9 @@ public class MisCursosActivity extends Activity {
         mainContainer.setBackgroundColor(Color.parseColor("#FFF7E6"));
         setContentView(mainContainer);
 
-        // Simula obtener cursos inscriptos (después cambiarlo por GET de MisCursos)
-        cargarDatos();
-
-        // Arma la pantalla
         mostrarCursos();
     }
 
-    private void cargarDatos() {
-        cursos = new ArrayList<>();
-        cursos.add(new CursoInscripto(1L, "Curso Cocina Italiana", "2025-07-10", "Sede Centro", 101L));
-        cursos.add(new CursoInscripto(2L, "Curso Pastelería Avanzada", "2025-08-15", "Sede Norte", 102L));
-    }
 
     private void mostrarCursos() {
         for (CursoInscripto c : cursos) {
@@ -57,46 +67,45 @@ public class MisCursosActivity extends Activity {
             btnAsistencia.setText("Marcar Asistencia");
             btnAsistencia.setBackgroundColor(Color.parseColor("#E58C23"));
             btnAsistencia.setTextColor(Color.WHITE);
+            btnAsistencia.setOnClickListener(v -> abrirScannerQR());
             card.addView(btnAsistencia);
-
-            btnAsistencia.setOnClickListener(v -> abrirScannerQR(c));
 
             mainContainer.addView(card);
         }
     }
 
-    private void abrirScannerQR(CursoInscripto curso) {
-        try {
-            Intent intent = new Intent("com.google.zxing.client.android.SCAN");
-            intent.putExtra("SCAN_MODE", "QR_CODE_MODE");
-            startActivityForResult(intent, curso.idCronograma.intValue());
-        } catch (ActivityNotFoundException e) {
-            Toast.makeText(this, "Necesitás instalar un lector QR como Barcode Scanner.", Toast.LENGTH_LONG).show();
-        }
+    private void abrirScannerQR() {
+        ScanOptions options = new ScanOptions();
+        options.setPrompt("Escaneá el código QR");
+        options.setBeepEnabled(true);
+        options.setOrientationLocked(true);
+        barcodeLauncher.launch(options);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+    private void manejarAsistenciaConQR(String qrContents) {
+        Long idAlumno = SharedPreferencesHelper.obtenerIdUsuario(this);
 
-        Long idAlumno = 1L; // Simula el ID del alumno, en real debería obtenerse del login o SharedPreferences
+        ApiService api = RetrofitClient.getInstance().getApi();
+        Call<String> call = api.marcarAsistenciaQR(idAlumno, qrContents);
 
-        if (resultCode == RESULT_OK) {
-            String qrContents = data.getStringExtra("SCAN_RESULT");
-            // El requestCode tiene el idCronograma que pasamos antes
-            marcarAsistenciaBackend(idAlumno, (long) requestCode, qrContents);
-        }
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(MisCursosActivity.this, "Asistencia registrada: " + response.body(), Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(MisCursosActivity.this, "Error en respuesta del servidor", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Toast.makeText(MisCursosActivity.this, "Fallo al conectar con el servidor", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
-    private void marcarAsistenciaBackend(Long idAlumno, Long idCronograma, String qr) {
-        // Aca parseás el qr si tiene JSON o un string "curso:ID,cronograma:ID"
-        // Hacés POST al backend con idAlumno, idCurso y idCronograma
-        Toast.makeText(this,
-                "Asistencia marcada.\nAlumno: " + idAlumno + "\nCronograma: " + idCronograma + "\nQR: " + qr,
-                Toast.LENGTH_LONG).show();
-    }
 
-    // MODELO SIMPLE
     static class CursoInscripto {
         Long idCurso;
         String nombre;
@@ -112,13 +121,6 @@ public class MisCursosActivity extends Activity {
             this.idCronograma = idCronograma;
         }
     }
-
-    // Helper para margen (solo para versiones modernas de SDK)
-    private void LinearLayout_setMarginBottom(LinearLayout ll, int dp) {
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        params.setMargins(0, 0, 0, dp);
-        ll.setLayoutParams(params);
-    }
 }
+
 
