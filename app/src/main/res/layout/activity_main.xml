@@ -202,7 +202,7 @@
             android:layout_width="match_parent"
             android:layout_height="450dp"
             android:orientation="vertical"
-            android:visibility=""
+            android:visibility="gone"
             android:background="@drawable/bg_filtros"
             android:padding="16dp"
             android:layout_marginTop="8dp"
