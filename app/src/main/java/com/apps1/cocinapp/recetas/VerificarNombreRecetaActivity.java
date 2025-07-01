@@ -90,34 +90,33 @@ public class VerificarNombreRecetaActivity extends AppCompatActivity {
     }
 
     private void verificarNombreReceta() {
-        String nombre = nombreInput.getText().toString();
+        String nombre = nombreInput.getText().toString().trim();
+
         if (TextUtils.isEmpty(nombre)) {
             Toast.makeText(this, "Ingresá el nombre del plato", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        Long userIdLong = SharedPreferencesHelper.obtenerIdUsuario(this);
-        if (userIdLong == null) {
+        Long userId = SharedPreferencesHelper.obtenerIdUsuario(this);
+        if (userId == null || userId == -1) {
             Toast.makeText(this, "Usuario no encontrado", Toast.LENGTH_SHORT).show();
             return;
         }
-        Long userId = SharedPreferencesHelper.obtenerIdUsuario(this);
 
         ApiService api = RetrofitClient.getInstance().getApi();
-        //LLamar al endpoint del backend
         Call<Map<String, Object>> call = api.verificarNombreReceta(userId, nombre);
-        // este endpoint debe devolver true/false
 
         call.enqueue(new Callback<Map<String, Object>>() {
             @Override
             public void onResponse(Call<Map<String, Object>> call, Response<Map<String, Object>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    Map<String, Object> data = response.body();
-                    Boolean existe = (Boolean) data.get("existe");
+                    Boolean existe = (Boolean) response.body().get("existe");
                     if (Boolean.TRUE.equals(existe)) {
                         mostrarDialog(nombre, userId);
                     } else {
-                        abrirCrearReceta("nuevo", nombre, userId);
+                        Intent intent = new Intent(VerificarNombreRecetaActivity.this, CrearRecetaActivity.class);
+                        intent.putExtra("nombreReceta", nombre);
+                        startActivity(intent);
                     }
                 } else {
                     Toast.makeText(VerificarNombreRecetaActivity.this, "Error consultando nombre", Toast.LENGTH_SHORT).show();
@@ -131,11 +130,19 @@ public class VerificarNombreRecetaActivity extends AppCompatActivity {
         });
     }
 
+
+
     private void mostrarDialog(String nombre, Long usuarioId) {
         new AlertDialog.Builder(this)
                 .setTitle("Receta existente")
                 .setMessage("Ya cargaste una receta con este nombre. ¿Qué querés hacer?")
-                .setPositiveButton("Editar receta existente", (dialog, which) -> abrirCrearReceta("reemplazar", nombre, usuarioId))
+                .setPositiveButton("Editar receta existente", (dialog, which) -> {
+                    Intent intent = new Intent(this, CrearRecetaActivity.class);
+                    intent.putExtra("nombreReceta", nombre);
+                    intent.putExtra("modo", "reemplazar");
+                    intent.putExtra("usuarioId", usuarioId);
+                    startActivity(intent);
+                })
                 .setNegativeButton("Cancelar", (dialog, which) -> dialog.dismiss())
                 .show();
     }

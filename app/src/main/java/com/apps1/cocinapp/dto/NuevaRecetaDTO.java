@@ -8,9 +8,9 @@ public class NuevaRecetaDTO {
     public String fotoPrincipal;
     public int porciones;
     public int cantidadPersonas;
-    public int idTipo;
 
-    public int idUsuario; // id del user, se saca del token
+    public Long idUsuario; // id del user, se saca del token
     public List<IngredienteDTO> ingredientes;
     public List<PasoCompletoDTO> pasos;
+    public String tipo;
 }

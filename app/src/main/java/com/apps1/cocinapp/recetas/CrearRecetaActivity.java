@@ -44,12 +44,23 @@ public class CrearRecetaActivity extends AppCompatActivity {
 
     private String modo; // "nuevo", "editar", "reemplazar"
     private String nombreReceta;
-    private int usuarioId;
+    private Long idUsuario;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_crear_receta);
+
+        idUsuario = SharedPreferencesHelper.obtenerIdUsuario(this);
+
+        EditText nombreInput = findViewById(R.id.nombreInput);
+        String nombreDesdeVerificacion = getIntent().getStringExtra("nombreReceta");
+        if (nombreDesdeVerificacion != null) {
+            nombreInput.setText(nombreDesdeVerificacion);
+            nombreInput.setEnabled(false); // opcional: evitar que lo editen
+        }
+
+
 
         descripcionInput = findViewById(R.id.descripcionInput);
         porcionesInput = findViewById(R.id.porcionesInput);
@@ -97,7 +108,6 @@ public class CrearRecetaActivity extends AppCompatActivity {
         // Recuperar datos del Intent
         modo = getIntent().getStringExtra("modo");
         nombreReceta = getIntent().getStringExtra("nombreReceta");
-        usuarioId = getIntent().getIntExtra("usuarioId", -1);
 
         if ("editar".equals(modo)) {
             cargarRecetaExistente();
@@ -164,7 +174,24 @@ public class CrearRecetaActivity extends AppCompatActivity {
 
         int porciones = Integer.parseInt(porcionesStr);
         int personas = Integer.parseInt(personasStr);
-        int idTipo = tipoPos;
+
+        // Convertir tipo para el backend
+        String tipoTexto = tipoSpinner.getSelectedItem().toString();
+        String tipoBack;
+        switch (tipoTexto) {
+            case "Entrada": tipoBack = "ENTRADA"; break;
+            case "Principal": tipoBack = "PLATO_PRINCIPAL"; break;
+            case "Postre": tipoBack = "POSTRE"; break;
+            default:
+                Toast.makeText(this, "Tipo inválido", Toast.LENGTH_SHORT).show();
+                return;
+        }
+
+        Long idUsuario = SharedPreferencesHelper.obtenerIdUsuario(this);
+        if (idUsuario == null || idUsuario == -1) {
+            Toast.makeText(this, "No se pudo obtener el ID del usuario", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         List<IngredienteDTO> ingredientes = new ArrayList<>();
         for (int i = 0; i < contenedorIngredientes.getChildCount(); i++) {
@@ -177,7 +204,7 @@ public class CrearRecetaActivity extends AppCompatActivity {
             if (!TextUtils.isEmpty(nombreIng.getText()) && !TextUtils.isEmpty(cantidad.getText()) && !TextUtils.isEmpty(unidad.getText())) {
                 IngredienteDTO ing = new IngredienteDTO();
                 ing.nombre = nombreIng.getText().toString();
-                ing.cantidad = Integer.parseInt(cantidad.getText().toString());
+                ing.cantidad = (int) Double.parseDouble(cantidad.getText().toString());
                 ing.unidad = unidad.getText().toString();
                 ing.observaciones = obs.getText().toString();
                 ingredientes.add(ing);
@@ -211,16 +238,20 @@ public class CrearRecetaActivity extends AppCompatActivity {
         }
 
         NuevaRecetaDTO nueva = new NuevaRecetaDTO();
-        nueva.nombreReceta = nombreReceta; // ya viene del intent validado
+        nueva.nombreReceta = nombreReceta;
         nueva.descripcionReceta = descripcion;
-        nueva.fotoPrincipal = urlMockImagenReceta != null ? urlMockImagenReceta : "app/src/main/res/drawable/pholder.jpg";
+        nueva.fotoPrincipal = urlMockImagenReceta != null ? urlMockImagenReceta : "https://www.recetasnestlecam.com/sites/default/files/srh_recipes/369562012750bd46ceaeef5d59a23229.jpg";
         nueva.porciones = porciones;
         nueva.cantidadPersonas = personas;
-        nueva.idTipo = idTipo;
-        nueva.idUsuario = usuarioId;
+        nueva.tipo = tipoBack;
+        nueva.idUsuario = idUsuario;
         nueva.ingredientes = ingredientes;
         nueva.pasos = pasos;
+
+        ApiService api = RetrofitClient.getInstance().getApi();
+        guardarReceta(api, nueva); //
     }
+
 
     private void guardarReceta(ApiService api, NuevaRecetaDTO nueva) {
         Call<Void> call = api.crearReceta(nueva);
