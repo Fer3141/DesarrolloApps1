@@ -3,7 +3,6 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="8dp"
-    android:background="@android:color/white"
     android:layout_marginBottom="8dp"
     android:elevation="1dp">
 
@@ -14,7 +13,7 @@
         android:layout_height="wrap_content"
         android:hint="descripcion del paso"
         android:padding="8dp"
-        android:background="@android:drawable/edit_text" />
+        android:background="@drawable/text_bonito" />
 
     <!-- boton para elegir foto -->
     <Button
