@@ -22,6 +22,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import com.apps1.cocinapp.dto.CalificacionDTO;
 import com.apps1.cocinapp.dto.CalificacionVistaDTO;
+import com.apps1.cocinapp.session.SharedPreferencesHelper;
 import com.bumptech.glide.Glide;
 
 
@@ -35,7 +36,7 @@ public class DetalleRecetaActivity extends AppCompatActivity {
     private Button btnEnviarComentario;
 
     private Long recetaId;
-    private Long usuarioId = 1L; // Reemplazar por el ID real
+    private Long usuarioId; // Reemplazar por el ID real
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +58,8 @@ public class DetalleRecetaActivity extends AppCompatActivity {
         btnEnviarComentario = findViewById(R.id.btnEnviarComentario);
 
         recetaId = getIntent().getLongExtra("idReceta", -1);
+
+        usuarioId = SharedPreferencesHelper.obtenerIdUsuario(this);
 
         if (recetaId != -1) {
             cargarDetalleReceta();
