@@ -68,6 +68,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Redirigir directo a MenuAdmin si ya está logueado y es ADMIN
+        if (SharedPreferencesHelper.hayToken(this)) {
+            String rol = SharedPreferencesHelper.obtenerRolDelToken(this);
+            if ("ADMIN".equals(rol)) {
+                startActivity(new Intent(this, MenuAdmin.class));
+                finish();
+                return;
+            }
+        }
+
         setContentView(R.layout.activity_main);
 
         drawerLayout = findViewById(R.id.drawer_layout);

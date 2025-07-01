@@ -6,6 +6,21 @@ public class RecetaResumenDTO {
     public String fotoPrincipal;
     public String nombreUsuario;
     public double promedio;
+    public String estado;
+    public RecetaResumenDTO(Long idReceta, String nombreReceta, String fotoPrincipal,
+                            String nombreUsuario, double promedio) {
+        this(idReceta, nombreReceta, fotoPrincipal, nombreUsuario, promedio, null);
+    }
+
+    // contructor para mis recetas
+    public RecetaResumenDTO(Long id, String nombre, String foto, String usuario, double promedio, String estado) {
+        this.idReceta = id;
+        this.nombreReceta = nombre;
+        this.fotoPrincipal = foto;
+        this.nombreUsuario = usuario;
+        this.promedio = promedio;
+        this.estado = estado;
+    }
 
     public Long getIdReceta() {
         return idReceta;

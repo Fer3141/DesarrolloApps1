@@ -14,4 +14,5 @@ public class RecetaDetalleDTO {
     public String nombreUsuario;
     public List<IngredienteDTO> ingredientes;
     public List<PasoCompletoDTO> pasos;
+
 }
