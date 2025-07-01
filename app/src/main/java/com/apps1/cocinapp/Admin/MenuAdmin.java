@@ -1,21 +1,22 @@
 package com.apps1.cocinapp.Admin;
 
-import android.annotation.SuppressLint;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.widget.*;
+import android.util.Base64;
+import android.util.Log;
+import android.widget.Button;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.apps1.cocinapp.R;
 import com.apps1.cocinapp.api.ApiService;
-import com.apps1.cocinapp.dto.CronogramaDTO;
-import com.apps1.cocinapp.dto.CursoConCronogramasDTO;
 import com.apps1.cocinapp.api.RetrofitClient;
-import com.bumptech.glide.Glide;
+import com.apps1.cocinapp.dto.RecetaDetalleDTO;
+import com.apps1.cocinapp.session.SharedPreferencesHelper;
 
-import java.util.ArrayList;
+
 import java.util.List;
 
 import retrofit2.Call;
@@ -24,186 +25,59 @@ import retrofit2.Response;
 
 public class MenuAdmin extends AppCompatActivity {
 
-    private LinearLayout mainContainer;
-    private Button btnRecetas;
-    private Button btnCursos;
+    private RecyclerView recyclerView;
+    private RecetaAdminAdapter adapter;
+    private Long idUsuario;
+    private ApiService apiService;
 
-    private List<Receta> recetasPendientes;
-    private List<Curso> cursos;
-
-
-
-    private void cargarDatosSimulados() {
-        recetasPendientes = new ArrayList<>();
-        recetasPendientes.add(new Receta(1, "Pizza Italiana", "Intermedio", 45, null));
-        recetasPendientes.add(new Receta(2, "Pasta Carbonara", "Fácil", 20, null));
-
-        cursos = new ArrayList<>();
-        List<Cronograma> cronos1 = new ArrayList<>();
-        cronos1.add(new Cronograma("Sede Centro", "2025-07-10", "2025-07-20", 18, 20, "https://api.qrserver.com/v1/create-qr-code/?data=Curso1"));
-        cronos1.add(new Cronograma("Sede Norte", "2025-08-01", "2025-08-15", 20, 20, "https://api.qrserver.com/v1/create-qr-code/?data=Curso2"));
-        cursos.add(new Curso("Cocina Italiana Básica", cronos1));
-    }
-
-    private void showRecetasMenu() {
-        mainContainer.removeAllViews();
-
-        TextView title = new TextView(this);
-        title.setText("ADMINISTRACIÓN - Aprobar Recetas");
-        title.setTextSize(20);
-        title.setTextColor(Color.parseColor("#5A4635"));
-        mainContainer.addView(title);
-
-        //La idea es añadir una columna de 'Aprobado' en la tabla de recetas
-        //que pueda quedar vacio (null) y que desaparezcan de esta lista a
-        //medida que se aprueben o rechacen.
-        for (Receta receta : new ArrayList<>(recetasPendientes)) {
-            LinearLayout item = new LinearLayout(this);
-            item.setOrientation(LinearLayout.HORIZONTAL);
-            item.setPadding(10, 20, 10, 20);
-
-            TextView tv = new TextView(this);
-            tv.setText(receta.nombre + " - " + receta.dificultad + " - " + receta.tiempo + " min");
-            tv.setPadding(0, 0, 20, 0);
-
-            Button btnAprobar = new Button(this);
-            btnAprobar.setText("✓");
-            btnAprobar.setOnClickListener(v -> {
-                receta.aprobado = 1;
-                recetasPendientes.remove(receta);
-                showRecetasMenu();
-            });
-
-            Button btnRechazar = new Button(this);
-            btnRechazar.setText("✕");
-            btnRechazar.setOnClickListener(v -> {
-                receta.aprobado = 0;
-                recetasPendientes.remove(receta);
-                showRecetasMenu();
-            });
-
-            item.addView(tv);
-            item.addView(btnAprobar);
-            item.addView(btnRechazar);
-
-            mainContainer.addView(item);
-        }
-
-        // Cambiar colores pestañas
-        btnRecetas.setBackgroundColor(Color.parseColor("#E58C23"));
-        btnRecetas.setTextColor(Color.WHITE);
-        btnCursos.setBackgroundColor(Color.parseColor("#F5F5F5"));
-        btnCursos.setTextColor(Color.BLACK);
-    }
-
-    private RecyclerView rvCursos;
-    private CursoAdapter adapter;
-
-    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu_admin);
 
-        //rvCursos = findViewById(R.id.rvCursosAdmin);
-        //rvCursos.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView = findViewById(R.id.recyclerRecetasPendientes);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        cargarCursosConCronogramas();
+        Button btnCurso = findViewById(R.id.btnCrearCurso);
+        Button btnSede = findViewById(R.id.btnCrearSede);
+        Button btnCronograma = findViewById(R.id.btnCrearCronograma);
+
+        idUsuario = SharedPreferencesHelper.obtenerIdUsuario(this);
+        apiService = RetrofitClient.getInstance().getApi();
+
+        cargarRecetasPendientes();
+
+        btnCurso.setOnClickListener(v -> {
+            Toast.makeText(this, "Crear Curso", Toast.LENGTH_SHORT).show();
+        });
+
+        btnSede.setOnClickListener(v -> {
+            Toast.makeText(this, "Crear Sede", Toast.LENGTH_SHORT).show();
+        });
+
+        btnCronograma.setOnClickListener(v -> {
+            Toast.makeText(this, "Crear Cronograma", Toast.LENGTH_SHORT).show();
+        });
     }
 
-    private void cargarCursosConCronogramas() {
-        ApiService apiService = RetrofitClient.getInstance().getApi();
-        Call<List<CursoConCronogramasDTO>> call = apiService.getCursosConCronogramas();
-
-        call.enqueue(new Callback<List<CursoConCronogramasDTO>>() {
+    private void cargarRecetasPendientes() {
+        apiService.getRecetasPendientes(idUsuario).enqueue(new Callback<List<RecetaDetalleDTO>>() {
             @Override
-            public void onResponse(Call<List<CursoConCronogramasDTO>> call, Response<List<CursoConCronogramasDTO>> response) {
-                if (response.isSuccessful()) {
-                    List<CursoConCronogramasDTO> lista = response.body();
-                    adapter = new CursoAdapter(lista);
-                    rvCursos.setAdapter(adapter);
+            public void onResponse(Call<List<RecetaDetalleDTO>> call, Response<List<RecetaDetalleDTO>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    adapter = new RecetaAdminAdapter(response.body(), idUsuario);
+                    recyclerView.setAdapter(adapter);
                 } else {
-                    Toast.makeText(MenuAdmin.this, "Error al cargar cursos", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MenuAdmin.this, "No se pudieron cargar las recetas", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<List<CursoConCronogramasDTO>> call, Throwable t) {
+            public void onFailure(Call<List<RecetaDetalleDTO>> call, Throwable t) {
+                Log.e("API_ERROR", t.getMessage());
                 Toast.makeText(MenuAdmin.this, "Fallo de conexión", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-
-    private void mostrarCursosConCronogramas(List<CursoConCronogramasDTO> lista) {
-        StringBuilder builder = new StringBuilder();
-        for (CursoConCronogramasDTO curso : lista) {
-            builder.append("Curso: ").append(curso.descripcion).append("\n");
-            builder.append("Contenidos: ").append(curso.contenidos).append("\n");
-            builder.append("Modalidad: ").append(curso.modalidad).append("\n");
-            builder.append("Precio: $").append(curso.precio).append("\n");
-
-            if (curso.cronogramas.isEmpty()) {
-                builder.append(" -> No tiene cronogramas.\n");
-            } else {
-                for (CronogramaDTO c : curso.cronogramas) {
-                    builder.append(" - Cronograma ID ").append(c.idCronograma)
-                            .append(" en ").append(c.sede)
-                            .append("   Desde: ").append(c.fechaInicio)
-                            .append(" hasta ").append(c.fechaFin)
-                            .append(" | Vacantes: ").append(c.vacantes).append("\n");
-                }
-            }
-            builder.append("\n");
-        }
-
-        //TextView tvCursos = findViewById(R.id.tvCursosAdmin);
-        //tvCursos.setText(builder.toString());
-    }
-
-
-    // MODELOS SIMPLES
-    static class Receta {
-        int id;
-        String nombre;
-        String dificultad;
-        int tiempo;
-        Integer aprobado;
-
-        Receta(int id, String nombre, String dificultad, int tiempo, Integer aprobado) {
-            this.id = id;
-            this.nombre = nombre;
-            this.dificultad = dificultad;
-            this.tiempo = tiempo;
-            this.aprobado = aprobado;
-        }
-    }
-
-    static class Curso {
-        String nombre;
-        List<Cronograma> cronogramas;
-        Curso(String nombre, List<Cronograma> cronogramas) {
-            this.nombre = nombre;
-            this.cronogramas = cronogramas;
-        }
-    }
-
-    static class Cronograma {
-        String sede;
-        String fechaInicio;
-        String fechaFin;
-        int inscritos;
-        int capacidad;
-        String urlQr;
-
-        Cronograma(String sede, String fechaInicio, String fechaFin, int inscritos, int capacidad, String urlQr) {
-            this.sede = sede;
-            this.fechaInicio = fechaInicio;
-            this.fechaFin = fechaFin;
-            this.inscritos = inscritos;
-            this.capacidad = capacidad;
-            this.urlQr = urlQr;
-        }
-    }
 }
-
