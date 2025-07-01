@@ -1,9 +1,12 @@
 package com.apps1.cocinapp.Admin;
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.apps1.cocinapp.R;
 import com.apps1.cocinapp.api.ApiService;
@@ -139,6 +142,21 @@ public class MenuAdmin extends AppCompatActivity {
         btnCursos.setTextColor(Color.BLACK);
     }
 
+    private RecyclerView rvCursos;
+    private CursoAdapter adapter;
+
+    @SuppressLint("MissingInflatedId")
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_menu_admin);
+
+        //rvCursos = findViewById(R.id.rvCursosAdmin);
+        //rvCursos.setLayoutManager(new LinearLayoutManager(this));
+
+        cargarCursosConCronogramas();
+    }
+
     private void cargarCursosConCronogramas() {
         ApiService apiService = RetrofitClient.getInstance().getApi();
         Call<List<CursoConCronogramasDTO>> call = apiService.getCursosConCronogramas();
@@ -148,7 +166,8 @@ public class MenuAdmin extends AppCompatActivity {
             public void onResponse(Call<List<CursoConCronogramasDTO>> call, Response<List<CursoConCronogramasDTO>> response) {
                 if (response.isSuccessful()) {
                     List<CursoConCronogramasDTO> lista = response.body();
-                    mostrarCursosConCronogramas(lista);
+                    adapter = new CursoAdapter(lista);
+                    rvCursos.setAdapter(adapter);
                 } else {
                     Toast.makeText(MenuAdmin.this, "Error al cargar cursos", Toast.LENGTH_SHORT).show();
                 }
@@ -160,6 +179,7 @@ public class MenuAdmin extends AppCompatActivity {
             }
         });
     }
+
 
     private void mostrarCursosConCronogramas(List<CursoConCronogramasDTO> lista) {
         StringBuilder builder = new StringBuilder();
