@@ -9,6 +9,7 @@
     <!-- Contenedor principal -->
     <RelativeLayout
         android:layout_width="match_parent"
+        android:id="@+id/rootLayout"
         android:layout_height="match_parent">
 
         <!-- Scroll + contenido -->
@@ -200,7 +201,7 @@
         <LinearLayout
             android:id="@+id/menuFiltros"
             android:layout_width="match_parent"
-            android:layout_height="450dp"
+            android:layout_height="500dp"
             android:orientation="vertical"
             android:visibility="gone"
             android:background="@drawable/bg_filtros"
@@ -299,6 +300,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="+ Filtrar Recetas"
+                android:textSize="20sp"
+                android:textColor="#FFF"
+                android:textStyle="bold"
+                android:backgroundTint="#E68523" />
+
+            <Button
+                android:id="@+id/btnCerrarFiltros"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Cerrar Filtros"
                 android:textSize="20sp"
                 android:textColor="#FFF"
                 android:textStyle="bold"

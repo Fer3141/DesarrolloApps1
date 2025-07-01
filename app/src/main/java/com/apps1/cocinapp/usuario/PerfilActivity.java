@@ -57,7 +57,7 @@ public class PerfilActivity extends AppCompatActivity {
 
 
         idUsuario = SharedPreferencesHelper.obtenerIdUsuario(this);  // Usá el ID, no el token
-        String rol = SharedPreferencesHelper.obtenerRol(this);
+        String rol = SharedPreferencesHelper.obtenerRolDelToken(this);
 
         // Referencias comunes
         TextView nombreText = findViewById(R.id.nombrePerfil);
@@ -65,7 +65,7 @@ public class PerfilActivity extends AppCompatActivity {
         LinearLayout seccionAlumno = findViewById(R.id.seccionAlumno);
 
         // Mostrar según rol
-        if (rol.equals("alumno")) {
+        if (rol.equals("ALUMNO")) {
             nombreText.setText("Alumno");
             btnQuieroSerAlumno.setVisibility(View.GONE);
             seccionAlumno.setVisibility(View.VISIBLE);

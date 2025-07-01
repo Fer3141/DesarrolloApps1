@@ -64,6 +64,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
                             SharedPreferencesHelper.guardarToken(LoginActivity.this, token);
+                          //  SharedPreferencesHelper.guardarRol();
 
                             Toast.makeText(LoginActivity.this, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(LoginActivity.this, MainActivity.class));

@@ -79,6 +79,8 @@ public class MisCursosActivity extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        Long idAlumno = 1L; // Simula el ID del alumno, en real debería obtenerse del login o SharedPreferences
+
         if (resultCode == RESULT_OK) {
             String qrContents = data.getStringExtra("SCAN_RESULT");
             // El requestCode tiene el idCronograma que pasamos antes

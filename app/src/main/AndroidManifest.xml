@@ -52,6 +52,7 @@
         <activity android:name=".recetas.CrearRecetaActivity" />
         <activity android:name=".recetas.VerificarNombreRecetaActivity"/>
         <activity android:name=".usuario.PerfilActivity" />
+        <activity android:name=".Admin.MenuAdmin" />
 
 
 

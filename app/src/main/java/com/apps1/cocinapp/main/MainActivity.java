@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,6 +21,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.apps1.cocinapp.Admin.MenuAdmin;
 import com.apps1.cocinapp.R;
 import com.apps1.cocinapp.dto.RecetaResumenDTO;
 import com.apps1.cocinapp.login.LoginActivity;
@@ -50,7 +52,13 @@ public class MainActivity extends AppCompatActivity {
     BottomNavigationView bottomNav;
     private boolean estaLogueado;
     LinearLayout menuOpciones;
-    Button btnCrearReceta;
+    Button btnCrearReceta ,btnCerrarFiltros;
+
+    LinearLayout menuFiltros;
+
+    ImageButton searchIcon;
+
+    RelativeLayout rootLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +79,10 @@ public class MainActivity extends AppCompatActivity {
         bottomNav = findViewById(R.id.bottomNavigation);
         menuOpciones = findViewById(R.id.menuOpciones);
         btnCrearReceta = findViewById(R.id.btnCrearReceta);
+        searchIcon = findViewById(R.id.searchIcon);
+        menuFiltros = findViewById(R.id.menuFiltros);
+        rootLayout = findViewById(R.id.rootLayout);
+        btnCerrarFiltros = findViewById(R.id.btnCerrarFiltros);
 
         estaLogueado = false;
 
@@ -157,6 +169,17 @@ public class MainActivity extends AppCompatActivity {
                 if (!estaLogueado) {
                     startActivity(new Intent(MainActivity.this, LoginActivity.class));
                 } else {
+                    String rol = SharedPreferencesHelper.obtenerRolDelToken(this);
+                    Toast.makeText(this, "Rol:" + rol, Toast.LENGTH_SHORT).show();
+
+                    if (rol.equals("ADMIN")) {
+                        startActivity(new Intent(this, MenuAdmin.class));
+                    } else if (rol.equals("ALUMNO")) {
+                        startActivity(new Intent(this, PerfilActivity.class));
+                    } else {
+                        // si no hay rol definido, redirigir al perfil por defecto
+                        startActivity(new Intent(this, PerfilActivity.class));
+                    }
                     startActivity(new Intent(this, PerfilActivity.class));
                 }
                 return true;
@@ -170,6 +193,29 @@ public class MainActivity extends AppCompatActivity {
         });
 
         cargarRecetas();
+
+
+        searchIcon.setOnClickListener(v -> {
+            menuFiltros.setVisibility(View.VISIBLE);
+           // String query = searchBox.getText().toString().trim();
+            /*if (!query.isEmpty()) {
+               // buscarRecetasPorNombre(query);
+            } else {
+                Toast.makeText(MainActivity.this, "Ingrese un nombre para buscar", Toast.LENGTH_SHORT).show();
+            }*/
+        });
+
+        rootLayout.setOnClickListener(v -> {
+            if (menuFiltros.getVisibility() == View.VISIBLE) {
+                menuFiltros.setVisibility(View.GONE);
+            }
+        });
+
+        btnCerrarFiltros.setOnClickListener(v -> {
+            menuFiltros.setVisibility(View.GONE);
+        });
+
+
     }
 
     private void cargarRecetas() {

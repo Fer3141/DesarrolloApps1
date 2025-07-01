@@ -35,14 +35,17 @@ public class SharedPreferencesHelper {
         return token != null && !token.isEmpty();
     }
 
-    public static void guardarRol(LoginActivity loginActivity, String rol) {
-        SharedPreferences prefs = loginActivity.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-        prefs.edit().putString("rol", rol).apply();
-    }
+    public static String obtenerRolDelToken(Context context) {
+        String token = obtenerToken(context);
+        if (token == null || token.isEmpty()) return null;
 
-    public static String obtenerRol(Context context) {
-        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-        return prefs.getString("rol", null);
+        try {
+            JWT jwt = new JWT(token);
+            return jwt.getClaim("rol").asString();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public static Long obtenerIdUsuario(Context context) {
