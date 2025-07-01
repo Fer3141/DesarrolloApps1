@@ -7,6 +7,7 @@
     <EditText
         android:id="@+id/inputNombreIngrediente"
         android:hint="Ingrediente"
+        android:background="@drawable/text_bonito"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
@@ -14,18 +15,21 @@
         android:id="@+id/inputCantidadIngrediente"
         android:hint="Cantidad"
         android:inputType="number"
+        android:background="@drawable/text_bonito"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
     <EditText
         android:id="@+id/inputUnidadIngrediente"
         android:hint="Unidad"
+        android:background="@drawable/text_bonito"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
     <EditText
         android:id="@+id/inputObsIngrediente"
         android:hint="Observaciones (opcional)"
+        android:background="@drawable/text_bonito"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 </LinearLayout>

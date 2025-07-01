@@ -3,13 +3,20 @@ package com.apps1.cocinapp.recetas;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.*;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.apps1.cocinapp.Admin.MenuAdmin;
+import com.apps1.cocinapp.R;
 import com.apps1.cocinapp.api.ApiService;
 import com.apps1.cocinapp.api.RetrofitClient;
+import com.apps1.cocinapp.login.LoginActivity;
+import com.apps1.cocinapp.main.MainActivity;
 import com.apps1.cocinapp.session.SharedPreferencesHelper;
+import com.apps1.cocinapp.usuario.PerfilActivity;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.Map;
 
@@ -22,25 +29,64 @@ public class VerificarNombreRecetaActivity extends AppCompatActivity {
     private EditText nombreInput;
     private Button btnSiguiente;
 
+    private boolean estaLogueado;
+    BottomNavigationView bottomNav;
+
+   // LinearLayout menuOpciones;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        LinearLayout layout = new LinearLayout(this);
-        layout.setOrientation(LinearLayout.VERTICAL);
-        layout.setPadding(40, 60, 40, 40);
 
-        nombreInput = new EditText(this);
-        nombreInput.setHint("Nombre del plato");
 
-        btnSiguiente = new Button(this);
-        btnSiguiente.setText("Siguiente");
+        setContentView(R.layout.activity_verificar_nombre_receta);
+        estaLogueado = false;
+        bottomNav = findViewById(R.id.bottomNavigation);
+        nombreInput = findViewById(R.id.nombreInput);
+        btnSiguiente = findViewById(R.id.btnSiguiente);
+     //   menuOpciones = findViewById(R.id.menuOpciones);
 
-        layout.addView(nombreInput);
-        layout.addView(btnSiguiente);
+        String token = SharedPreferencesHelper.obtenerToken(this);
 
-        setContentView(layout);
+        if (token != null && !token.isEmpty()) {
+            estaLogueado = true;
+        }
 
         btnSiguiente.setOnClickListener(v -> verificarNombreReceta());
+
+        bottomNav.setOnItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+
+            if (itemId == R.id.nav_home) {
+                startActivity(new Intent(this, MainActivity.class));
+                return true;
+            } else if (itemId == R.id.nav_menu) {
+                if (estaLogueado) {
+                   // menuOpciones.setVisibility(menuOpciones.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
+                }
+                return true;
+            } else if (itemId == R.id.nav_perfil) {
+                if (!estaLogueado) {
+                    startActivity(new Intent(this, LoginActivity.class));
+                } else {
+                    String rol = SharedPreferencesHelper.obtenerRolDelToken(this);
+                    Toast.makeText(this, "Rol:" + rol, Toast.LENGTH_SHORT).show();
+
+                    if (rol.equals("ADMIN")) {
+                        startActivity(new Intent(this, MenuAdmin.class));
+                    } else if (rol.equals("ALUMNO")) {
+                        startActivity(new Intent(this, PerfilActivity.class));
+                    } else {
+                        // si no hay rol definido, redirigir al perfil por defecto
+                        startActivity(new Intent(this, PerfilActivity.class));
+                    }
+                    startActivity(new Intent(this, PerfilActivity.class));
+                }
+                return true;
+            }
+            return false;
+        });
+
     }
 
     private void verificarNombreReceta() {
