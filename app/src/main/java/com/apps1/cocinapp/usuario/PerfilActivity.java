@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.apps1.cocinapp.main.MainActivity;
 import com.apps1.cocinapp.api.ApiService;
 import com.apps1.cocinapp.api.RetrofitClient;
+import com.apps1.cocinapp.recetas.MisRecetasActivity;
 import com.apps1.cocinapp.session.SharedPreferencesHelper;
 
 
@@ -77,6 +78,15 @@ public class PerfilActivity extends AppCompatActivity {
         obtenerPerfil();
 
         btnGuardarBiografia.setOnClickListener(v -> guardarBiografia());
+
+        Button btnMisRecetas = new Button(this);
+        btnMisRecetas.setText("Ver mis recetas");
+        btnMisRecetas.setPadding(20, 20, 20, 20);
+        btnMisRecetas.setOnClickListener(v -> {
+            Intent intent = new Intent(PerfilActivity.this, MisRecetasActivity.class);
+            startActivity(intent);
+        });
+
 
         btnCerrarSesion.setOnClickListener(v -> {
             SharedPreferencesHelper.eliminarToken(this);
