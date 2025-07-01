@@ -105,43 +105,28 @@ public class CrearRecetaActivity extends AppCompatActivity {
 
     private void cargarRecetaExistente() {
         ApiService api = RetrofitClient.getInstance().getApi();
-        //Se necesita endpoint acá
-        Call<NuevaRecetaDTO> call = api.obtenerRecetaPorNombreYUsuario(usuarioId, nombreReceta);
-        call.enqueue(new Callback<NuevaRecetaDTO>() {
+        Call<List<RecetaResumenDTO>> call = api.buscarRecetasPorNombre(nombreReceta);
+
+        call.enqueue(new Callback<List<RecetaResumenDTO>>() {
             @Override
-            public void onResponse(Call<NuevaRecetaDTO> call, Response<NuevaRecetaDTO> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    NuevaRecetaDTO receta = response.body();
-                    descripcionInput.setText(receta.descripcionReceta);
-                    porcionesInput.setText(String.valueOf(receta.porciones));
-                    personasInput.setText(String.valueOf(receta.cantidadPersonas));
-                    tipoSpinner.setSelection(receta.idTipo);
+            public void onResponse(Call<List<RecetaResumenDTO>> call, Response<List<RecetaResumenDTO>> response) {
+                if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
+                    RecetaResumenDTO resumen = response.body().get(0); // tomo el primero
+                    Long idReceta = resumen.getIdReceta(); // o resumen.idReceta según tu DTO
 
-                    // Ingredientes
-                    for (IngredienteDTO ing : receta.ingredientes) {
-                        View item = getLayoutInflater().inflate(R.layout.item_ingrediente, null);
-                        ((EditText)item.findViewById(R.id.inputNombreIngrediente)).setText(ing.nombre);
-                        ((EditText)item.findViewById(R.id.inputCantidadIngrediente)).setText(String.valueOf(ing.cantidad));
-                        ((EditText)item.findViewById(R.id.inputUnidadIngrediente)).setText(ing.unidad);
-                        ((EditText)item.findViewById(R.id.inputObsIngrediente)).setText(ing.observaciones);
-                        contenedorIngredientes.addView(item);
-                    }
-
-                    // Pasos
-                    for (PasoCompletoDTO paso : receta.pasos) {
-                        View item = getLayoutInflater().inflate(R.layout.item_paso_crear, null);
-                        ((EditText)item.findViewById(R.id.inputTextoPaso)).setText(paso.texto);
-                        contenedorPasos.addView(item);
-                    }
+                    api.getDetalleReceta(idReceta);
+                } else {
+                    Toast.makeText(CrearRecetaActivity.this, "No se encontró la receta", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<NuevaRecetaDTO> call, Throwable t) {
-                Toast.makeText(CrearRecetaActivity.this, "Error al cargar receta existente", Toast.LENGTH_SHORT).show();
+            public void onFailure(Call<List<RecetaResumenDTO>> call, Throwable t) {
+                Toast.makeText(CrearRecetaActivity.this, "Error de red", Toast.LENGTH_SHORT).show();
             }
         });
     }
+
 
     private void agregarIngrediente() {
         View item = getLayoutInflater().inflate(R.layout.item_ingrediente, null);
@@ -234,24 +219,6 @@ public class CrearRecetaActivity extends AppCompatActivity {
         nueva.idUsuario = usuarioId;
         nueva.ingredientes = ingredientes;
         nueva.pasos = pasos;
-
-        ApiService api = RetrofitClient.getInstance().getApi();
-
-        if ("reemplazar".equals(modo)) {
-            Call<Void> borrar = api.borrarReceta(usuarioId, nombreReceta);
-            borrar.enqueue(new Callback<Void>() {
-                @Override
-                public void onResponse(Call<Void> call, Response<Void> response) {
-                    guardarReceta(api, nueva);
-                }
-                @Override
-                public void onFailure(Call<Void> call, Throwable t) {
-                    guardarReceta(api, nueva);
-                }
-            });
-        } else {
-            guardarReceta(api, nueva);
-        }
     }
 
     private void guardarReceta(ApiService api, NuevaRecetaDTO nueva) {

@@ -77,6 +77,11 @@ public interface ApiService {
             @Query("idReceta") Long idReceta
     );
 
+    @GET("/recetas")
+    Call<List<RecetaResumenDTO>> buscarPorNombre(@Query("nombre") String nombre);
+
+
+
 
     // --- CALIFICACIONES ---
     @POST("/calificaciones")
