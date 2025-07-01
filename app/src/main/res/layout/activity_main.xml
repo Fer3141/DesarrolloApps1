@@ -67,16 +67,32 @@
                     </LinearLayout>
 
                     <!-- Buscador -->
-                    <EditText
-                        android:id="@+id/searchBox"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Buscar receta..."
-                        android:background="@android:drawable/edit_text"
-                        android:padding="12dp"
-                        android:drawableEnd="@android:drawable/ic_menu_search"
-                        android:layout_marginBottom="16dp" />
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_margin="5dp">
 
+                        <EditText
+                            android:id="@+id/searchBox"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:hint="Buscar receta..."
+                            android:padding="12dp"
+                            android:background="@android:drawable/edit_text"
+                            android:drawableEnd="@null" />
+
+                        <ImageButton
+                            android:id="@+id/searchIcon"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_marginStart="8dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="Filtrar búsqueda"
+                            android:src="@drawable/ic_filter" />
+                    </LinearLayout>
                     <!-- Tabs -->
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -179,6 +195,116 @@
                 android:textColor="#E68523"
                 android:layout_marginTop="8dp" />
         </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/menuFiltros"
+            android:layout_width="match_parent"
+            android:layout_height="450dp"
+            android:orientation="vertical"
+            android:visibility=""
+            android:background="@drawable/bg_filtros"
+            android:padding="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_above="@id/bottomNavigation"
+            android:elevation="6dp">
+
+            <!-- Tipo -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:text="Tipo"
+                android:textStyle="bold"
+                android:textColor="#E68523" />
+
+            <Spinner
+                android:id="@+id/spinnerTipo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/text_bonito"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Ingrediente -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:text="Ingrediente"
+                android:textColor="#E68523"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/inputIngrediente"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Buscar Ingrediente..."
+                android:background="@drawable/text_bonito"
+                android:padding="10dp"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Usuario -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:text="Usuario"
+                android:textColor="#E68523"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/inputUsuario"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Buscar Usuario..."
+                android:background="@drawable/text_bonito"
+                android:padding="10dp"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Switch excluir ingrediente -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="8dp">
+
+                <Switch
+                    android:id="@+id/switchExcluir"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Excluir Ingrediente"
+                    android:textSize="20sp"
+                    android:textColor="#E68523"
+                    android:layout_marginStart="8dp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/inputExcluido"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Buscar Ingrediente..."
+                android:background="@drawable/text_bonito"
+                android:padding="10dp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Botón Filtrar -->
+            <Button
+                android:id="@+id/btnFiltrarRecetas"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="+ Filtrar Recetas"
+                android:textSize="20sp"
+                android:textColor="#FFF"
+                android:textStyle="bold"
+                android:backgroundTint="#E68523" />
+        </LinearLayout>
+
 
 
         <!-- Menú inferior -->
