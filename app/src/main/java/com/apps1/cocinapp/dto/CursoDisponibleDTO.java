@@ -4,16 +4,15 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class CursoDisponibleDTO {
-    public Long idCronograma;
+    public int idCronograma;
     public String descripcionCurso;
     public String modalidad;
     public String sede;
     public String direccion;
-    public LocalDate fechaInicio;
-    public LocalDate fechaFin;
+    public String fechaInicio;
+    public String fechaFin;
     public int vacantes;
     public double precioFinal;
-
 
 }
 

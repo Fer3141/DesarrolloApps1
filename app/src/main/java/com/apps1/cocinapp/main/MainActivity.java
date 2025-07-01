@@ -23,8 +23,10 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.apps1.cocinapp.Admin.CursoAdapter;
 import com.apps1.cocinapp.Admin.MenuAdmin;
 import com.apps1.cocinapp.R;
+import com.apps1.cocinapp.dto.CursoDisponibleDTO;
 import com.apps1.cocinapp.dto.RecetaResumenDTO;
 import com.apps1.cocinapp.login.LoginActivity;
 import com.apps1.cocinapp.receta.RecetaAdapter;
@@ -104,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
         estaLogueado = false;
 
         TextView tabRecent = findViewById(R.id.tabRecent);   // Mejores feed
-        TextView tabRecipes = findViewById(R.id.tabRecipes); // Nuevo feed
+        TextView tabRecipes = findViewById(R.id.tabRecipes);
 
 
 
@@ -157,7 +159,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         tabCourses.setOnClickListener(v -> {
-            Toast.makeText(this, "vista de cursos todavia no conectada", Toast.LENGTH_SHORT).show();
+            cargarCursos();
+            Toast.makeText(this, "mostrando cursos", Toast.LENGTH_SHORT).show();
         });
 
         TextView userWelcome = findViewById(R.id.userWelcome);
@@ -267,6 +270,9 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<List<RecetaResumenDTO>> call, Response<List<RecetaResumenDTO>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     recetasRecientes = response.body();
+
+                    recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+                    recyclerView.setAdapter(adapter); //
                     adapter.actualizarLista(recetasRecientes);
                 } else {
                     Toast.makeText(MainActivity.this, "no se pudieron cargar recetas nuevas", Toast.LENGTH_SHORT).show();
@@ -280,12 +286,15 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
     private void cargarRecetasMejores() {
         RetrofitClient.getInstance().getApi().getMejoresRecetas().enqueue(new Callback<List<RecetaResumenDTO>>() {
             @Override
             public void onResponse(Call<List<RecetaResumenDTO>> call, Response<List<RecetaResumenDTO>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     recetasRecientes = response.body();
+                    recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+                    recyclerView.setAdapter(adapter); //
                     adapter.actualizarLista(recetasRecientes);
                 } else {
                     Toast.makeText(MainActivity.this, "no se pudieron cargar recetas mejores", Toast.LENGTH_SHORT).show();
@@ -298,6 +307,29 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void cargarCursos() {
+        RetrofitClient.getInstance().getApi().getCursos().enqueue(new Callback<List<CursoDisponibleDTO>>() {
+            @Override
+            public void onResponse(Call<List<CursoDisponibleDTO>> call, Response<List<CursoDisponibleDTO>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    recetasRecientes.clear(); // limpia las recetas actuales
+                    recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+                    CursoAdapter adapterCursos = new CursoAdapter(MainActivity.this, response.body());
+                    recyclerView.setAdapter(adapterCursos);
+                } else {
+                    Toast.makeText(MainActivity.this, "No se pudieron cargar los cursos", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<CursoDisponibleDTO>> call, Throwable t) {
+                Toast.makeText(MainActivity.this, "Fallo de red", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
 
     public boolean hayInternet() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
