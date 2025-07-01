@@ -89,8 +89,7 @@ public class VerificarNombreRecetaActivity extends AppCompatActivity {
         new AlertDialog.Builder(this)
                 .setTitle("Receta existente")
                 .setMessage("Ya cargaste una receta con este nombre. ¿Qué querés hacer?")
-                .setPositiveButton("Reemplazar", (dialog, which) -> abrirCrearReceta("reemplazar", nombre, usuarioId))
-                .setNeutralButton("Editar", (dialog, which) -> abrirCrearReceta("editar", nombre, usuarioId))
+                .setPositiveButton("Editar receta existente", (dialog, which) -> abrirCrearReceta("reemplazar", nombre, usuarioId))
                 .setNegativeButton("Cancelar", (dialog, which) -> dialog.dismiss())
                 .show();
     }
