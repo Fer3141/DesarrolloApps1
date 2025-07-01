@@ -80,6 +80,8 @@ public interface ApiService {
     @GET("/recetas")
     Call<List<RecetaResumenDTO>> buscarPorNombre(@Query("nombre") String nombre);
 
+    @GET("/mis-recetas")
+    Call<List<RecetaResumenDTO>> getRecetasPorUsuario(@Query("idUsuario") Long idUsuario);
 
 
 

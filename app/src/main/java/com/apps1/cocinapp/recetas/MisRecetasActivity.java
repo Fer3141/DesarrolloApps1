@@ -1,19 +1,20 @@
 package com.apps1.cocinapp.recetas;
 
-import com.apps1.cocinapp.receta.RecetaAdapter;
+import com.apps1.cocinapp.receta.MisRecetasAdapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.graphics.Color;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.apps1.cocinapp.R;
 import com.apps1.cocinapp.api.RetrofitClient;
 import com.apps1.cocinapp.dto.RecetaResumenDTO;
 import com.apps1.cocinapp.session.SharedPreferencesHelper;
@@ -28,50 +29,76 @@ import retrofit2.Response;
 public class MisRecetasActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
-    private RecetaAdapter adapter;
+    private MisRecetasAdapter adapter;
     private List<RecetaResumenDTO> misRecetas = new ArrayList<>();
-    private int usuarioId;
+    private TextView mensajeSinConexion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        recyclerView = findViewById(R.id.recetasRecyclerView);
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setPadding(20, 20, 20, 20);
+        layout.setBackgroundColor(Color.WHITE);
+
+        mensajeSinConexion = new TextView(this);
+        mensajeSinConexion.setText("Sin conexión a internet");
+        mensajeSinConexion.setTextSize(18);
+        mensajeSinConexion.setTextColor(Color.RED);
+        mensajeSinConexion.setVisibility(TextView.GONE);
+
+        recyclerView = new RecyclerView(this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new RecetaAdapter(this, misRecetas);
+
+        layout.addView(mensajeSinConexion);
+        layout.addView(recyclerView);
+
+        setContentView(layout);
+
+        adapter = new MisRecetasAdapter(this, misRecetas);
         recyclerView.setAdapter(adapter);
 
-        usuarioId = SharedPreferencesHelper.obtenerIdUsuario(this).intValue();
-
         if (!hayInternet()) {
-            Toast.makeText(this, "Sin conexión a internet", Toast.LENGTH_SHORT).show();
-            return;
+            mensajeSinConexion.setVisibility(TextView.VISIBLE);
+            recyclerView.setVisibility(RecyclerView.GONE);
+        } else {
+            mensajeSinConexion.setVisibility(TextView.GONE);
+            recyclerView.setVisibility(RecyclerView.VISIBLE);
+            cargarMisRecetas();
         }
-
-        cargarMisRecetas();
     }
 
     private void cargarMisRecetas() {
-        //Obtener todas las recetas del usuario
-        RetrofitClient.getInstance().getApi().getMisRecetas(usuarioId).enqueue(new Callback<List<RecetaResumenDTO>>() {
-            @Override
-            public void onResponse(Call<List<RecetaResumenDTO>> call, Response<List<RecetaResumenDTO>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    misRecetas = response.body();
-                    adapter.actualizarLista(misRecetas);
-                } else {
-                    Toast.makeText(MisRecetasActivity.this, "No se pudieron cargar tus recetas", Toast.LENGTH_SHORT).show();
-                }
-            }
+        Long userId = SharedPreferencesHelper.obtenerIdUsuario(this);
+        if (userId == null) {
+            Toast.makeText(this, "No se encontró usuario logueado", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-            @Override
-            public void onFailure(Call<List<RecetaResumenDTO>> call, Throwable t) {
-                Toast.makeText(MisRecetasActivity.this, "Error de red", Toast.LENGTH_SHORT).show();
-            }
-        });
+        RetrofitClient.getInstance()
+                .getApi()
+                .getRecetasPorUsuario(userId)
+                .enqueue(new Callback<List<RecetaResumenDTO>>() {
+                    @Override
+                    public void onResponse(Call<List<RecetaResumenDTO>> call, Response<List<RecetaResumenDTO>> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            misRecetas.clear();
+                            misRecetas.addAll(response.body());
+                            adapter.notifyDataSetChanged();
+                        } else {
+                            Toast.makeText(MisRecetasActivity.this, "No se pudieron cargar tus recetas", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<RecetaResumenDTO>> call, Throwable t) {
+                        Toast.makeText(MisRecetasActivity.this, "Error de red al cargar recetas", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
-    public boolean hayInternet() {
+    private boolean hayInternet() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         if (cm != null) {
             NetworkInfo info = cm.getActiveNetworkInfo();
@@ -79,5 +106,12 @@ public class MisRecetasActivity extends AppCompatActivity {
         }
         return false;
     }
-}
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (hayInternet()) {
+            cargarMisRecetas();
+        }
+    }
+}
