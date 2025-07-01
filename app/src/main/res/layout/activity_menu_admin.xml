@@ -1,26 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/adminLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="#FFFFFF"
     android:padding="16dp">
 
-    <!-- Ejemplo simple, agregá lo que necesites -->
     <TextView
-        android:id="@+id/textTitulo"
-        android:layout_width="wrap_content"
+        android:id="@+id/tituloAdmin"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Menú Admin"
-        android:textSize="24sp"
+        android:text="Panel de Administración"
+        android:textSize="22sp"
+        android:textColor="#E68523"
         android:textStyle="bold"
-        android:paddingBottom="16dp"/>
+        android:gravity="center"
+        android:layout_marginBottom="12dp" />
 
-    <!-- Aquí después podés agregar un RecyclerView para cargar las cards -->
+    <Button
+        android:id="@+id/btnCrearCurso"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="+ Crear Curso"
+        android:backgroundTint="#FFF5E9"
+        android:textColor="#E68523"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp" />
+
+    <Button
+        android:id="@+id/btnCrearSede"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="+ Crear Sede"
+        android:backgroundTint="#FFF5E9"
+        android:textColor="#E68523"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp" />
+
+    <Button
+        android:id="@+id/btnCrearCronograma"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="+ Crear Cronograma"
+        android:backgroundTint="#FFF5E9"
+        android:textColor="#E68523"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Recetas pendientes"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="#E68523"
+        android:layout_marginBottom="8dp" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerCursos"
+        android:id="@+id/recyclerRecetasPendientes"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
-
+        android:layout_weight="1"
+        android:paddingBottom="12dp"/>
 </LinearLayout>

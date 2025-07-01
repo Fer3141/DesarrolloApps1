@@ -27,9 +27,22 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface ApiService {
+
+    // --- ADMIN ---
+
+    @GET("/admin/recetas/pendientes")
+    Call<List<RecetaDetalleDTO>> getRecetasPendientes(@Query("idUsuario") Long id);
+
+    @PUT("/admin/recetas/{id}/aprobar")
+    Call<Void> aprobarReceta(@Path("id") Long idReceta, @Query("idUsuario") Long idUsuario);
+
+    @PUT("/admin/recetas/{id}/rechazar")
+    Call<Void> rechazarReceta(@Path("id") Long idReceta, @Query("idUsuario") Long idUsuario, @Body Map<String, String> motivo);
+
 
     // --- RECETAS ---
 
