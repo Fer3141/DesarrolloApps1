@@ -2,6 +2,7 @@ package com.apps1.cocinapp.Admin;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +20,7 @@ import com.apps1.cocinapp.R;
 import com.apps1.cocinapp.api.RetrofitClient;
 import com.apps1.cocinapp.dto.RecetaDetalleDTO;
 import com.apps1.cocinapp.api.ApiService;
+import com.apps1.cocinapp.recetas.DetalleRecetaActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
@@ -36,7 +38,7 @@ public class RecetaAdminAdapter extends RecyclerView.Adapter<RecetaAdminAdapter.
     private ApiService apiService;
     private Long idAdmin;
 
-    public RecetaAdminAdapter(List<RecetaDetalleDTO> lista, Long idAdmin) {
+    public RecetaAdminAdapter(Context context, List<RecetaDetalleDTO> lista, Long idAdmin) {
         this.context = context;
         this.lista = lista;
         this.idAdmin = idAdmin;
@@ -119,6 +121,12 @@ public class RecetaAdminAdapter extends RecyclerView.Adapter<RecetaAdminAdapter.
                     })
                     .setNegativeButton("Cancelar", null)
                     .show();
+        });
+
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(context, DetalleRecetaActivity.class);
+            intent.putExtra("idReceta", receta.idReceta);
+            context.startActivity(intent);
         });
     }
 

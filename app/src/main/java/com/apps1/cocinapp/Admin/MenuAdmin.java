@@ -18,6 +18,7 @@ import com.apps1.cocinapp.dto.MotivoRechazoDTO;
 import com.apps1.cocinapp.dto.RecetaDetalleDTO;
 import com.apps1.cocinapp.api.RetrofitClient;
 import com.apps1.cocinapp.main.MainActivity;
+import com.apps1.cocinapp.recetas.DetalleRecetaActivity;
 import com.apps1.cocinapp.session.SharedPreferencesHelper;
 
 import java.util.HashMap;
@@ -73,6 +74,13 @@ public class MenuAdmin extends AppCompatActivity {
                         @Override
                         public void onRechazar(RecetaDetalleDTO receta) {
                             mostrarDialogoRechazo(receta);
+                        }
+
+                        @Override
+                        public void onClickDetalle(RecetaDetalleDTO receta) {
+                            Intent intent = new Intent(MenuAdmin.this, DetalleRecetaActivity.class);
+                            intent.putExtra("idReceta", receta.getIdReceta());
+                            startActivity(intent);
                         }
                     });
                     recycler.setAdapter(adapter);

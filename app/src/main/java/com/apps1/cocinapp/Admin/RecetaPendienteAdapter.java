@@ -31,6 +31,8 @@ public class RecetaPendienteAdapter extends RecyclerView.Adapter<RecetaPendiente
     public interface OnRecetaAdminClickListener {
         void onAprobar(RecetaDetalleDTO receta);
         void onRechazar(RecetaDetalleDTO receta);
+
+        void onClickDetalle(RecetaDetalleDTO receta);
     }
 
     private List<RecetaDetalleDTO> recetas;
@@ -65,6 +67,11 @@ public class RecetaPendienteAdapter extends RecyclerView.Adapter<RecetaPendiente
 
         holder.btnAprobar.setOnClickListener(v -> listener.onAprobar(receta));
         holder.btnRechazar.setOnClickListener(v -> listener.onRechazar(receta));
+
+        holder.itemView.setOnClickListener(v -> {
+            listener.onClickDetalle(receta);
+        });
+
     }
 
     @Override
