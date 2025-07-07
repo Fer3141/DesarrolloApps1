@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.apps1.cocinapp.R;
 import com.apps1.cocinapp.api.ApiService;
+import com.apps1.cocinapp.dto.CalificacionVistaDTO;
 import com.apps1.cocinapp.dto.MotivoRechazoDTO;
 import com.apps1.cocinapp.dto.RecetaDetalleDTO;
 import com.apps1.cocinapp.api.RetrofitClient;
@@ -41,6 +42,11 @@ public class MenuAdmin extends AppCompatActivity {
         setContentView(R.layout.activity_menu_admin);
 
         recycler = findViewById(R.id.recyclerRecetasPendientes);
+
+        RecyclerView recyclerComentarios = findViewById(R.id.recyclerComentariosPendientes);
+        recyclerComentarios.setLayoutManager(new LinearLayoutManager(this));
+        cargarComentariosPendientes(recyclerComentarios);
+
 
         Button btnCerrarSesion = findViewById(R.id.btnCerrarSesion);
         btnCerrarSesion.setOnClickListener(v -> {
@@ -95,6 +101,67 @@ public class MenuAdmin extends AppCompatActivity {
             }
         });
     }
+
+    private void cargarComentariosPendientes(RecyclerView recycler) {
+        ApiService api = RetrofitClient.getInstance().getApi();
+        api.getComentariosPendientes().enqueue(new Callback<List<CalificacionVistaDTO>>() {
+            @Override
+            public void onResponse(Call<List<CalificacionVistaDTO>> call, Response<List<CalificacionVistaDTO>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    ComentarioPendienteAdapter adapter = new ComentarioPendienteAdapter(response.body(), MenuAdmin.this, new ComentarioPendienteAdapter.OnComentarioClickListener() {
+                        @Override
+                        public void onAprobar(Long id) {
+                            aprobarComentario(id);
+                        }
+
+                        @Override
+                        public void onRechazar(Long id) {
+                            rechazarComentario(id);
+                        }
+                    });
+                    recycler.setAdapter(adapter);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<CalificacionVistaDTO>> call, Throwable t) {
+                Toast.makeText(MenuAdmin.this, "Fallo al cargar comentarios", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+    private void aprobarComentario(Long id) {
+        RetrofitClient.getInstance().getApi().aprobarComentario(id).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                Toast.makeText(MenuAdmin.this, "Comentario aprobado", Toast.LENGTH_SHORT).show();
+                recreate(); // o volver a cargar los datos
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Toast.makeText(MenuAdmin.this, "Error al aprobar", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void rechazarComentario(Long id) {
+        RetrofitClient.getInstance().getApi().rechazarComentario(id).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                Toast.makeText(MenuAdmin.this, "Comentario eliminado", Toast.LENGTH_SHORT).show();
+                recreate();
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Toast.makeText(MenuAdmin.this, "Error al eliminar", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
 
     private void aprobarReceta(RecetaDetalleDTO receta) {
         RetrofitClient.getInstance().getApi().aprobarReceta(receta.idReceta, idAdmin).enqueue(new Callback<Void>() {

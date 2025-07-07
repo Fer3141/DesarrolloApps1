@@ -111,6 +111,16 @@ public interface ApiService {
     Call<List<CalificacionVistaDTO>> obtenerCalificaciones(@Query("idReceta") Long idReceta);
 
 
+    @GET("calificaciones/comentarios/pendientes")
+    Call<List<CalificacionVistaDTO>> getComentariosPendientes();
+
+    @PUT("calificaciones/comentarios/{id}/aprobar")
+    Call<Void> aprobarComentario(@Path("id") Long id);
+
+    @DELETE("calificaciones/comentarios/{id}/rechazar")
+    Call<Void> rechazarComentario(@Path("id") Long id);
+
+
     // --- CURSOS ---
     @GET("/cursos")
     Call<List<CursoDisponibleDTO>> getCursos();

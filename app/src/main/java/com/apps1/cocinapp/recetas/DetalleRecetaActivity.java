@@ -164,7 +164,7 @@ public class DetalleRecetaActivity extends AppCompatActivity {
                     contenedorComentarios.removeAllViews();
                     for (CalificacionVistaDTO c : response.body()) {
                         TextView t = new TextView(DetalleRecetaActivity.this);
-                        t.setText(c.aliasUsuario + ":\n" + c.comentario);
+                        t.setText(c.getAliasUsuario() + ":\n" + c.getComentario());
                         contenedorComentarios.addView(t);
                     }
                 }

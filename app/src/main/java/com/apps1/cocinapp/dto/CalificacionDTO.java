@@ -6,5 +6,6 @@ public class CalificacionDTO {
     public Long idReceta;
     public int calificacion;
     public String comentarios;
+
 }
 
