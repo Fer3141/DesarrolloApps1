@@ -148,6 +148,15 @@ public class MainActivity extends AppCompatActivity {
             finish();
         });
 
+        tabCourses.setVisibility(View.GONE);
+
+
+        if (SharedPreferencesHelper.hayToken(this)) {
+            if (SharedPreferencesHelper.obtenerRolDelToken(this).equals("ALUMNO")){
+                tabCourses.setVisibility(View.VISIBLE);
+            }
+        }
+
         tabRecent.setOnClickListener(v -> {
             cargarRecetasMejores();
             Toast.makeText(this, "mostrando recetas populares", Toast.LENGTH_SHORT).show();

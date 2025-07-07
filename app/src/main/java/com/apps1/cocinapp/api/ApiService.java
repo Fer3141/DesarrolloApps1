@@ -197,8 +197,8 @@ public interface ApiService {
     @PUT("api/editar-biografia")
     Call<Void> actualizarBiografia(@Query("idUsuario") Long idUsuario, @Query("biografia") String biografia);
 
-    @PUT("/api/hacer-alumno")
-    Call<Void> hacerseAlumno(@Header("Authorization") String authHeader, @Body AlumnoRequest datos);
+    @PUT("/api/hacer-alumno/{idUsuario}")
+    Call<Void> hacerseAlumno(@Header("Authorization") String authHeader,  @Path("idUsuario") Long idUsuario, @Body AlumnoRequest datos);
 
 
 

@@ -121,7 +121,7 @@ public class PerfilActivity extends AppCompatActivity {
             AlumnoRequest alumnoRequest = new AlumnoRequest(idUsuario, tramiteDNI, nroTarjeta);
             ApiService api = RetrofitClient.getInstance().getApi();
 
-            Call<Void> call = api.hacerseAlumno("Bearer " + token, alumnoRequest);
+            Call<Void> call = api.hacerseAlumno("Bearer " + token, idUsuario, alumnoRequest);
             call.enqueue(new Callback<Void>() {
                 @Override
                 public void onResponse(Call<Void> call, Response<Void> response) {
